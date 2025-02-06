@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Elements</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .product-card {
+            width: 250px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            transition: transform 0.3s;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+        .buy-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .buy-button:hover {
+            background-color: #218838;
+        }
+        .countdown {
+            margin: 20px auto;
+            font-size: 1.5em;
+        }
+        .gallery {
+            margin: 20px;
+        }
+        .images img {
+            width: 150px;
+            margin: 10px;
+            display: inline-block;
+            transition: opacity 0.3s;
+        }
+        .images img.hidden {
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Product Card -->
+    <div class="product-card">
+        <img src="https://source.unsplash.com/250x250/?product" alt="Product Image">
+        <h2>Product Name</h2>
+        <p>$49.99</p>
+        <button class="buy-button">Buy Now</button>
+    </div>
+    
+    <!-- Countdown Timer -->
+    <div class="countdown">
+        <h2>Sale Ends In: 10d </h2>
+        <p id="timer"></p>
+    </div>
+    
+    <!-- Image Gallery with Filters -->
+    <div class="gallery">
+        <button onclick="filterImages('all')">All</button>
+        <button onclick="filterImages('nature')">Nature</button>
+        <button onclick="filterImages('technology')">Technology</button>
+        <button onclick="filterImages('art')">Art</button>
+        <div class="images">
+            <img src="https://picsum.photos/150/150?random=1" class="image nature">
+            <img src="https://picsum.photos/150/150?random=2" class="image technology">
+            <img src="https://picsum.photos/150/150?random=3" class="image art">
+            <img src="https://picsum.photos/150/150?random=4" class="image nature">
+            <img src="https://picsum.photos/150/150?random=5" class="image technology">
+            <img src="https://picsum.photos/150/150?random=6" class="image art">
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
