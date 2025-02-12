@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Library Management</h2>
+        
+        <h3>Books</h3>
+        <table id="booksTable">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Copies Available</th>
+            </tr>
+        </table>
+
+        <h3>Authors</h3>
+        <table id="authorsTable">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </table>
+
+        <h3>Members</h3>
+        <table id="membersTable">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+        </table>
+        
+        <h3>Add Book</h3>
+        <div class="form-group">
+            <input type="text" id="title" placeholder="Title">
+            <input type="number" id="author_id" placeholder="Author ID">
+            <input type="text" id="isbn" placeholder="ISBN">
+            <input type="number" id="publication_year" placeholder="Publication Year">
+            <input type="number" id="copies_available" placeholder="Copies Available">
+            <input type="number" id="total_copies" placeholder="Total Copies">
+            <button onclick="addBook()">Add Book</button>
+        </div>
+    </div>
+
+    <script>
+        function fetchBooks() {
+            fetch('http://localhost:3000/api/books')
+                .then(response => response.json())
+                .then(data => {
+                    let table = document.getElementById('booksTable');
+                    data.forEach(book => {
+                        let row = table.insertRow();
+                        row.innerHTML = `<td>${book.title}</td><td>${book.author_name}</td><td>${book.isbn}</td><td>${book.copies_available}</td>`;
+                    });
+                });
+        }
+
+        function fetchAuthors() {
+            fetch('http://localhost:3000/api/authors')
+                .then(response => response.json())
+                .then(data => {
+                    let table = document.getElementById('authorsTable');
+                    data.forEach(author => {
+                        let row = table.insertRow();
+                        row.innerHTML = `<td>${author.first_name}</td><td>${author.last_name}</td>`;
+                    });
+                });
+        }
+
+        function fetchMembers() {
+            fetch('http://localhost:3000/api/members')
+                .then(response => response.json())
+                .then(data => {
+                    let table = document.getElementById('membersTable');
+                    data.forEach(member => {
+                        let row = table.insertRow();
+                        row.innerHTML = `<td>${member.first_name}</td><td>${member.last_name}</td><td>${member.email}</td><td>${member.phone}</td>`;
+                    });
+                });
+        }
+
+        function addBook() {
+            const book = {
+                title: document.getElementById('title').value,
+                author_id: document.getElementById('author_id').value,
+                isbn: document.getElementById('isbn').value,
+                publication_year: document.getElementById('publication_year').value,
+                copies_available: document.getElementById('copies_available').value,
+                total_copies: document.getElementById('total_copies').value
+            };
+            
+            fetch('http://localhost:3000/api/books', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(book)
+            }).then(response => response.json())
+              .then(data => {
+                  alert(data.message);
+                  location.reload();
+              });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchBooks();
+            fetchAuthors();
+            fetchMembers();
+        });
+    </script>
+</body>
+</html>
