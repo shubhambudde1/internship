@@ -1,74 +1,214 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./styles.css";
+import {
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
-const App2 = () => {
-    const [employees, setEmployees] = useState([]);
-    const [formData, setFormData] = useState({ name: "", email: "", position: "", salary: "" });
+const App = () => {
+  const [employees, setEmployees] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    position: "",
+    salary: "",
+  });
+  const [editId, setEditId] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
+  // Fetch all employees
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/employees");
+      setEmployees(response.data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
 
-    const fetchEmployees = async () => {
-        const response = await axios.get("http://localhost:8080/employees");
-        setEmployees(response.data);
-    };
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  // Add or Update Employee
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editId) {
+        // Update existing employee
+        await axios.put(`http://localhost:8080/employees/${editId}`, formData);
+        setEditId(null);
+      } else {
+        // Add new employee
         await axios.post("http://localhost:8080/employees", formData);
-        fetchEmployees();
-        setFormData({ name: "", email: "", position: "", salary: "" });
-    };
+      }
+      fetchEmployees(); // Refresh the list
+      setFormData({ name: "", email: "", position: "", salary: "" }); // Clear form
+      setOpenDialog(false); // Close dialog
+    } catch (error) {
+      console.error("Error saving employee:", error);
+    }
+  };
 
-    const handleDelete = async (id) => {
-        await axios.delete(`http://localhost:8080/employees/${id}`);
-        fetchEmployees();
-    };
+  // Delete Employee
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/employees/${id}`);
+      fetchEmployees(); // Refresh the list
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+    }
+  };
 
-    return (
-        <div className="container">
-            <h2>Employee Management System</h2>
+  // Edit Employee
+  const handleEdit = (employee) => {
+    setFormData({
+      name: employee.name,
+      email: employee.email,
+      position: employee.position,
+      salary: employee.salary,
+    });
+    setEditId(employee.id);
+    setOpenDialog(true);
+  };
 
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-                <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-                <input type="text" name="position" placeholder="Position" value={formData.position} onChange={handleChange} required />
-                <input type="number" name="salary" placeholder="Salary" value={formData.salary} onChange={handleChange} required />
-                <button type="submit">Add Employee</button>
-            </form>
+  // Open dialog for adding a new employee
+  const handleOpenDialog = () => {
+    setFormData({ name: "", email: "", position: "", salary: "" });
+    setEditId(null);
+    setOpenDialog(true);
+  };
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Position</th>
-                        <th>Salary</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {employees.map((emp) => (
-                        <tr key={emp.id}>
-                            <td>{emp.name}</td>
-                            <td>{emp.email}</td>
-                            <td>{emp.position}</td>
-                            <td>{emp.salary}</td>
-                            <td>
-                                <button className="delete" onClick={() => handleDelete(emp.id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+  // Close dialog
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  // Fetch employees on component mount
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  return (
+    <Container>
+      <h1>Employee Management</h1>
+
+      {/* Add Employee Button */}
+      <Button variant="contained" color="primary" onClick={handleOpenDialog}>
+        Add Employee
+      </Button>
+
+      {/* Employee List */}
+      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Position</TableCell>
+              <TableCell>Salary</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {employees.map((employee) => (
+              <TableRow key={employee.id}>
+                <TableCell>{employee.id}</TableCell>
+                <TableCell>{employee.name}</TableCell>
+                <TableCell>{employee.email}</TableCell>
+                <TableCell>{employee.position}</TableCell>
+                <TableCell>{employee.salary}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEdit(employee)}
+                    style={{ marginRight: "10px" }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleDelete(employee.id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Add/Edit Employee Dialog */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{editId ? "Edit Employee" : "Add Employee"}</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Position"
+              name="position"
+              value={formData.position}
+              onChange={handleInputChange}
+              required
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Salary"
+              name="salary"
+              type="number"
+              value={formData.salary}
+              onChange={handleInputChange}
+              required
+            />
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Cancel</Button>
+              <Button type="submit" variant="contained" color="primary">
+                {editId ? "Update" : "Add"}
+              </Button>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </Container>
+  );
 };
 
-export default App2;
+export default App;
