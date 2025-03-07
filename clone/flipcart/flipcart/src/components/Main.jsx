@@ -1,8 +1,15 @@
 import React from 'react';
 import Header from './Header';
 import ProductList from './ProductList';
+import { Link } from 'react-router-dom';
+import ProductCards from './products/products';
+
 
 const Main = () => {
+  const handleCategoryClick = (category) => {
+    localStorage.setItem('category', category);
+  };
+
   return (
     <div className="w-full">
       {/* Header Section */}
@@ -10,7 +17,6 @@ const Main = () => {
 
       {/* Category Navigation Bar */}
       <nav className="bg-white h-[70px] w-full flex justify-center gap-x-20 px-4 pb-20 border-b-2 border-gray-200 ">
-
         {/* Category Items */}
         {[
           { label: 'Kilos', icon: '🧼' },
@@ -23,10 +29,16 @@ const Main = () => {
           { label: 'Beauty, Toys & More', icon: '🧸' },
           { label: 'Two Wheelers', icon: '🏍️' },
         ].map((category, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <span className="text-[24px]">{category.icon}</span>
-            <span className="text-[#212121] font-sans font-medium text-[12px] mt-1">{category.label}</span>
-          </div>
+          <Link
+            key={index}
+            to={`/category/${category.label.toLowerCase()}`}
+            onClick={() => handleCategoryClick(category.label.toLowerCase())}
+          >
+            <div className="flex flex-col items-center">
+              <span className="text-[24px]">{category.icon}</span>
+              <span className="text-[#212121] font-sans font-medium text-[12px] mt-1">{category.label}</span>
+            </div>
+          </Link>
         ))}
       </nav>
 
@@ -42,8 +54,6 @@ const Main = () => {
 
         {/* Main Content */}
         <div className="text-center">
-         
-
           {/* Promotional Text */}
           <h2 className="text-white font-sans font-bold text-[24px] mt-4">Top 100 Earphone From ₹699</h2>
           <p className="text-[#D0D0D0] font-sans text-[16px]">boAt, realme & more — Grab or Gone</p>
@@ -67,6 +77,7 @@ const Main = () => {
       </section>
       {/* <ProductCard /> */}
       <ProductList />
+      <ProductCards />
     </div>
   );
 };

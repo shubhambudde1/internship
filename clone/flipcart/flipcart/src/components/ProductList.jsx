@@ -6,32 +6,21 @@ import shirt1 from '../assets/499Img/shirt1.jpeg';
 import shirt2 from '../assets/499Img/shirt2.jpeg';
 
 const ProductList = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const cardWidth = 300; // Width of each product card
+  const productsToShow = 3; // Number of products to show at a time
 
   const handlePrevClick = () => {
-    console.log('Previous button clicked');
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? products.length - 1 : prevIndex - 1));
+    setScrollPosition((prevPosition) => Math.max(prevPosition - cardWidth, 0));
   };
 
-  const handleNextClick = () => {
-    console.log('Next button clicked');
-    setCurrentIndex((prevIndex) => (prevIndex === products.length - 1 ? 0 : prevIndex + 1));
+ const handleNextClick = () => {
+    setScrollPosition((prevPosition) => Math.min(prevPosition + cardWidth, products.length * cardWidth - productsToShow * cardWidth));
   };
+
 
   // Sample product data (replace with your actual data source)
   const products = [
-    {
-      id: 1,
-      title: "Sari",
-      price: 29.99,
-      image: sariImage, // Use the imported image
-    },
-    {
-      id: 1,
-      title: "Sari",
-      price: 29.99,
-      image: sariImage, // Use the imported image
-    },
     {
       id: 1,
       title: "Sari",
@@ -56,27 +45,38 @@ const ProductList = () => {
       price: 19.99,
       image: shirt2,
     },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt2,
+    },
   ];
 
-  console.log('Current Index:', currentIndex);
-  console.log('Products:', products);
-
-  const visibleProducts = products.slice(currentIndex, currentIndex + 4);
-  if (visibleProducts.length < 4) {
-    visibleProducts.push(...products.slice(0, 4 - visibleProducts.length));
-  }
-
   return (
-    <div className="relative">
-      <button onClick={handlePrevClick} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">
+    <div className="relative w-full overflow-x-auto scrollbar-hide">
+      <button
+        onClick={handlePrevClick}
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
+        aria-label="Previous Products"
+      >
         <FaArrowLeft />
       </button>
-      <div className="flex overflow-hidden space-x-4 p-4">
-        {visibleProducts.map((product) => (
-          <ProductCard key={product.id} {...product} />
+      <div
+        className="flex transition-transform duration-300 space-x-4 p-4"
+        style={{ transform: `translateX(-${scrollPosition}px)` }}
+      >
+        {products.map((product) => (
+          <div key={product.id} className="min-w-[300px]">
+            <ProductCard {...product} />
+          </div>
         ))}
       </div>
-      <button onClick={handleNextClick} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">
+      <button
+        onClick={handleNextClick}
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
+        aria-label="Next Products"
+      >
         <FaArrowRight />
       </button>
     </div>

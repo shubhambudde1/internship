@@ -1,51 +1,49 @@
 import React, { useState } from "react";
-import { FaShoppingCart, FaTag, FaInfoCircle, FaStar } from "react-icons/fa";
-import { colors, sizes } from '../data/productData';
+import { useParams, useNavigate } from 'react-router-dom';
+import { dummyProducts } from './dummyProducts';
 
 const ProductDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const product = dummyProducts.find((product) => product.id === parseInt(id));
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
 
+  if (!product) {
+    return <div>Product not found</div>;
+  }
+
+  const handleAddToCart = () => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push({ ...product, selectedColor, selectedSize });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert('Product added to cart');
+    navigate('/cart'); // Navigate to the cart page
+  };
+
   return (
-    <div className="w-2 h-full min-h-screen p-6 bg-gray-100">
+    <div className="w-full h-full min-h-screen p-6 bg-gray-100">
       {/* Product Image and Details */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Image Section */}
-        <div className="w-full md:w-1/2 ">
-          <img
-            src={colors[selectedColor].image}
-            alt="Selected Product"
-            className="w-[430px] h-auto rounded-lg shadow-md"
-          />
-          <div className="flex gap-2 mt-4">
-            {colors.map((color, index) => (
-              <img
-                key={index}
-                src={color.image}
-                alt={color.name}
-                className={`w-20 h-24 rounded-lg cursor-pointer border ${
-                  selectedColor === index ? "border-blue-500" : "border-gray-300"
-                }`}
-                onClick={() => setSelectedColor(index)}
-              />
-            ))}
-          </div>
+        <div className="w-full md:w-1/2">
+          <img src={product.image} alt={product.name} className="w-full h-full object-cover rounded-t-lg" />
         </div>
 
         {/* Product Details */}
-        <div className="w-full md:w-1/2 ml-[-150px]">
+        <div className="w-full md:w-1/2">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-yellow-500">★</span>
             <span className="text-gray-700">4.2</span>
             <span className="text-gray-500">(178 ratings and 5 reviews)</span>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800">Men's Casual T-Shirt</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
 
           <div className="mt-4">
             <h2 className="text-lg font-semibold text-gray-700">Color</h2>
             <div className="flex gap-2 mt-2">
-              {colors.map((color, index) => (
+              {product.colors && product.colors.map((color, index) => (
                 <img
                   key={index}
                   src={color.image}
@@ -62,7 +60,7 @@ const ProductDetail = () => {
           <div className="mt-4">
             <h2 className="text-lg font-semibold text-gray-700">Size</h2>
             <div className="flex gap-2 mt-2">
-              {sizes.map((size) => (
+              {product.sizes && product.sizes.map((size) => (
                 <button
                   key={size}
                   className={`w-12 h-12 bg-white border rounded-md text-gray-700 ${
@@ -89,7 +87,10 @@ const ProductDetail = () => {
           </div>
 
           <div className="mt-6 flex gap-4">
-            <button className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600">
+            <button
+              className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600"
+              onClick={handleAddToCart}
+            >
               ADD TO CART
             </button>
             <button className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600">
