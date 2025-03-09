@@ -2,6 +2,9 @@ import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { dummyProducts } from './dummyProducts';
 import { CartContext } from './CartContext';
+import Header from '../Header';
+import Footer from '../Footer';
+
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -25,12 +28,14 @@ const ProductDetail = () => {
   };
 
   return (
+    <>
+        <Header />
     <div className="w-full h-full min-h-screen p-6 bg-gray-100">
       {/* Product Image and Details */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Image Section */}
-        <div className="w-full md:w-1/2">
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover rounded-t-lg" />
+        <div className="w-full md:w-1/2 p-7">
+          <img src={product.image} alt={product.name} className="w-[400px] h-[500px] object-cover rounded-t-lg" />
         </div>
 
         {/* Product Details */}
@@ -48,13 +53,13 @@ const ProductDetail = () => {
             <div className="flex gap-2 mt-2">
               {product.colors && product.colors.map((color, index) => (
                 <img
-                  key={index}
-                  src={color.image}
-                  alt={color.name}
-                  className={`w-20 h-24 rounded-lg cursor-pointer border ${
-                    selectedColor === index ? "border-blue-500" : "border-gray-300"
-                  }`}
-                  onClick={() => setSelectedColor(index)}
+                key={index}
+                src={color.image}
+                alt={color.name}
+                className={`w-20 h-24 rounded-lg cursor-pointer border ${
+                  selectedColor === index ? "border-blue-500" : "border-gray-300"
+                }`}
+                onClick={() => setSelectedColor(index)}
                 />
               ))}
             </div>
@@ -65,11 +70,11 @@ const ProductDetail = () => {
             <div className="flex gap-2 mt-2">
               {product.sizes && product.sizes.map((size) => (
                 <button
-                  key={size}
-                  className={`w-12 h-12 bg-white border rounded-md text-gray-700 ${
-                    selectedSize === size ? "border-blue-500 bg-blue-100" : "border-gray-300"
-                  }`}
-                  onClick={() => setSelectedSize(size)}
+                key={size}
+                className={`w-12 h-12 bg-white border rounded-md text-gray-700 ${
+                  selectedSize === size ? "border-blue-500 bg-blue-100" : "border-gray-300"
+                }`}
+                onClick={() => setSelectedSize(size)}
                 >
                   {size}
                 </button>
@@ -93,7 +98,7 @@ const ProductDetail = () => {
             <button
               className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600"
               onClick={handleAddToCart}
-            >
+              >
               ADD TO CART
             </button>
             <button className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600">
@@ -113,6 +118,8 @@ const ProductDetail = () => {
         </div>
       </div>
     </div>
+      <Footer />
+              </>
   );
 };
 

@@ -80,8 +80,8 @@ const Main = () => {
       {/* <ProductCard /> */}
       <ProductList />
       <ProductCards />
-{/*       
-      <Footer /> */}
+      
+      <Footer />
 
     </div>
   );

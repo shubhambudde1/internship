@@ -1,6 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+
+import { Link } from 'react-router-dom'
 
 function Header() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const history = useHistory();
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (searchQuery.toLowerCase() === 'fashion') {
+        history.push('/randomimages');
+      }
+    }
+  };
   return (
     <>
     <header className="bg-white h-[60px] w-full  flex items-center justify-between px-4 border-b-2 border-gray-200 sticky top-0 p-9 mb-7">
@@ -14,6 +28,8 @@ function Header() {
         <div className="flex-1 mx-4">
           <input
             type="text"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Search for Products, Brands and More"
             className="w-[500px] h-[40px] rounded-[5px] border-none bg-gray-100 text-[#828282] font-sans text-[14px] px-4"
           />
@@ -23,10 +39,12 @@ function Header() {
         <div className="flex items-center space-x-6">
           {/* Login Button */}
           <div className="relative group">
-            <button className="bg-[#2874F0] text-white font-sans font-bold text-[14px] px-[20px] py-[10px] rounded-[5px] hover:bg-[#1a5dc4] flex items-center mr-14">
-              Login
-              <span className="ml-2">▼</span>
-            </button>
+            <Link to="/login">
+              <button className="bg-[#2874F0] text-white font-sans font-bold text-[14px] px-[20px] py-[10px] rounded-[5px] hover:bg-[#1a5dc4] flex items-center mr-14">
+                Login
+                <span className="ml-2">▼</span>
+              </button>
+            </Link>
             {/* Dropdown can be added here */}
           </div>
 
@@ -45,7 +63,7 @@ function Header() {
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 8h14l-2-8M10 16a1 1 0 112 0 1 1 0 01-2 0zm6 0a1 1 0 112 0 1 1 0 01-2 0z"
               />
             </svg>
-            <span className="text-[#212121] font-sans text-[14px] mr-14">Cart</span>
+            <Link to="/cart" className="text-[#212121] font-sans text-[14px] mr-14">Cart</Link>
           </div>
 
           {/* Become a Seller */}

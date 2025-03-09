@@ -1,68 +1,44 @@
-const Footer = () => {
-    return (
-      <footer className="bg-[#172337] text-white py-8">
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="font-semibold mb-2">ABOUT</h3>
-            <ul className="space-y-2">
-              <li>Contact Us</li>
-              <li>About Us</li>
-              <li>Careers</li>
-              <li>Flipkart Stories</li>
-              <li>Press</li>
-              <li>Corporate Information</li>
+import React from 'react';
+
+function Footer() {
+  return (
+    <footer className="bg-gray-800 text-white py-8">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-wrap">
+          <div className="w-full md:w-1/3 mb-6 md:mb-0">
+            <h2 className="text-xl font-bold mb-2">About Us</h2>
+            <p>We are a leading e-commerce platform providing a wide range of products.</p>
+          </div>
+          <div className="w-full md:w-1/3 mb-6 md:mb-0">
+            <h2 className="text-xl font-bold mb-2">Quick Links</h2>
+            <ul>
+              <li className="mb-2"><a href="/home" className="hover:underline">Home</a></li>
+              <li className="mb-2"><a href="/shop" className="hover:underline">Shop</a></li>
+              <li className="mb-2"><a href="/contact" className="hover:underline">Contact</a></li>
+              <li className="mb-2"><a href="/about" className="hover:underline">About</a></li>
             </ul>
           </div>
-          <div>
-            <h3 className="font-semibold mb-2">GROUP COMPANIES</h3>
-            <ul className="space-y-2">
-              <li>Myntra</li>
-              <li>Cleartrip</li>
-              <li>Shopsy</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">HELP</h3>
-            <ul className="space-y-2">
-              <li>Payments</li>
-              <li>Shipping</li>
-              <li>Cancellation & Returns</li>
-              <li>FAQ</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">CONSUMER POLICY</h3>
-            <ul className="space-y-2">
-              <li>Cancellation & Returns</li>
-              <li>Terms Of Use</li>
-              <li>Security</li>
-              <li>Privacy</li>
-              <li>Sitemap</li>
-              <li>Grievance Redressal</li>
-              <li>EPR Compliance</li>
-            </ul>
+          <div className="w-full md:w-1/3 mb-6 md:mb-0">
+            <h2 className="text-xl font-bold mb-2">Contact Us</h2>
+            <p>Email: support@flipcart.com</p>
+            <p>Phone: +123 456 7890</p>
           </div>
         </div>
-  
-        <div className="border-t border-gray-700 mt-8 py-4">
-          <div className="container mx-auto px-4 flex flex-wrap justify-between items-center">
-            <div className="flex space-x-6">
-              <span>Become a Seller</span>
-              <span>Advertise</span>
-              <span>Gift Cards</span>
-              <span>Help Center</span>
-              <span>© 2007-2025 Flipkart.com</span>
-            </div>
-            <div className="flex space-x-4">
-              <img src="/visa.png" alt="Visa" className="h-6" />
-              <img src="/mastercard.png" alt="Mastercard" className="h-6" />
-              <img src="/paypal.png" alt="PayPal" className="h-6" />
-            </div>
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-2">Follow Us</h2>
+          <div className="flex space-x-4">
+            <a href="https://facebook.com" className="hover:underline">Facebook</a>
+            <a href="https://twitter.com" className="hover:underline">Twitter</a>
+            <a href="https://instagram.com" className="hover:underline">Instagram</a>
+            <a href="https://linkedin.com" className="hover:underline">LinkedIn</a>
           </div>
         </div>
-      </footer>
-    );
-  };
-  
-  export default Footer;
-  
+      </div>
+      <div className="bg-gray-900 text-center py-4 mt-8">
+        &copy; 2023 Flipcart | All Rights Reserved
+      </div>
+    </footer>
+  );
+}
+
+export default Footer;

@@ -37,7 +37,7 @@ const ProductList = () => {
       id: 3,
       title: "Shirt 2",
       price: 19.99,
-      image: shirt2,
+      image: sariImage,
     },
     {
       id: 4,
@@ -49,23 +49,75 @@ const ProductList = () => {
       id: 5,
       title: "Shirt 4",
       price: 19.99,
+      image: sariImage,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt2,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: sariImage,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt2,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt1,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt1,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt2,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
+      image: shirt1,
+    },
+     {
+      id: 5,
+      title: "Shirt 4",
+      price: 19.99,
       image: shirt2,
     },
   ];
 
   return (
+    <>
+      <h2 className="text-2xl font-bold mb-4 mt-4">599 only
+
+      </h2>
     <div className="relative w-full overflow-x-auto scrollbar-hide">
       <button
         onClick={handlePrevClick}
         className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
         aria-label="Previous Products"
-      >
+        >
         <FaArrowLeft />
       </button>
       <div
         className="flex transition-transform duration-300 space-x-4 p-4"
         style={{ transform: `translateX(-${scrollPosition}px)` }}
-      >
+        >
         {products.map((product) => (
           <div key={product.id} className="min-w-[300px]">
             <ProductCard {...product} />
@@ -76,10 +128,11 @@ const ProductList = () => {
         onClick={handleNextClick}
         className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
         aria-label="Next Products"
-      >
+        >
         <FaArrowRight />
       </button>
     </div>
+        </>
   );
 };
 
