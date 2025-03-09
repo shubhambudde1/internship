@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from './CartContext';
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState([]);
-
-  useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    setCartItems(cart);
-  }, []);
+  const { state } = useContext(CartContext);
+  const cartItems = state.cart;
 
   return (
     <div className="container mx-auto px-4 w-full flex">
@@ -23,8 +20,8 @@ const CartPage = () => {
                   <h3 className="text-lg font-bold">{item.name}</h3>
                   <p className="text-gray-600">{item.description}</p>
                   <p className="text-gray-800 font-semibold">${item.price}</p>
-                  <p className="text-gray-500">
-                    Size: {item.selectedSize}, Color: {item.colors[item.selectedColor].name}
+                 <p className="text-gray-500">
+                    Size: {item.selectedSize}, Color: {item.colors && item.colors[item.selectedColor] ? item.colors[item.selectedColor].name : 'N/A'}
                   </p>
                 </div>
               </div>

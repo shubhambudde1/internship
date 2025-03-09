@@ -3,6 +3,8 @@ import Header from './Header';
 import ProductList from './ProductList';
 import { Link } from 'react-router-dom';
 import ProductCards from './products/products';
+import Footer from './Footer';
+
 
 
 const Main = () => {
@@ -78,6 +80,9 @@ const Main = () => {
       {/* <ProductCard /> */}
       <ProductList />
       <ProductCards />
+{/*       
+      <Footer /> */}
+
     </div>
   );
 };

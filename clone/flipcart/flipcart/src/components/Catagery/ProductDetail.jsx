@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { dummyProducts } from './dummyProducts';
+import { CartContext } from './CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -8,15 +9,17 @@ const ProductDetail = () => {
   const product = dummyProducts.find((product) => product.id === parseInt(id));
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
+  const { dispatch } = useContext(CartContext);
 
   if (!product) {
     return <div>Product not found</div>;
   }
 
   const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart.push({ ...product, selectedColor, selectedSize });
-    localStorage.setItem('cart', JSON.stringify(cart));
+    dispatch({
+      type: 'ADD_TO_CART',
+      payload: { ...product, selectedColor, selectedSize }
+    });
     alert('Product added to cart');
     navigate('/cart'); // Navigate to the cart page
   };
