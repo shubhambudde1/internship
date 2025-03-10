@@ -1,9 +1,8 @@
 import React from 'react';
-import Header from './Header';
+
 import ProductList from './ProductList';
 import { Link } from 'react-router-dom';
 import ProductCards from './products/products';
-import Footer from './Footer';
 
 
 
@@ -15,8 +14,7 @@ const Main = () => {
   return (
     <div className="w-full">
       {/* Header Section */}
-      <Header />
-
+  
       {/* Category Navigation Bar */}
       <nav className="bg-white h-[70px] w-full flex justify-center gap-x-20 px-4 pb-20 border-b-2 border-gray-200 ">
         {/* Category Items */}
@@ -81,7 +79,7 @@ const Main = () => {
       <ProductList />
       <ProductCards />
       
-      <Footer />
+     
 
     </div>
   );

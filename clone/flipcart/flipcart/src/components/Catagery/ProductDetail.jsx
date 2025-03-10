@@ -2,8 +2,7 @@ import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { dummyProducts } from './dummyProducts';
 import { CartContext } from './CartContext';
-import Header from '../Header';
-import Footer from '../Footer';
+
 
 
 const ProductDetail = () => {
@@ -29,7 +28,7 @@ const ProductDetail = () => {
 
   return (
     <>
-        <Header />
+        
     <div className="w-full h-full min-h-screen p-6 bg-gray-100">
       {/* Product Image and Details */}
       <div className="flex flex-col md:flex-row gap-6">
@@ -118,7 +117,7 @@ const ProductDetail = () => {
         </div>
       </div>
     </div>
-      <Footer />
+   
               </>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { CartContext } from './CartContext';
-import Header from '../Header';
-import Footer from '../Footer';
+
 
 const CartPage = () => {
   const { state } = useContext(CartContext);
@@ -9,7 +8,7 @@ const CartPage = () => {
 
   return (
     <>
-      <Header />
+     
     <div className="container mx-auto px-4 w-full flex">
       <div className="w-1/2">
         <h1 className="text-2xl font-bold mb-4">Shopping Cart</h1>
@@ -87,7 +86,7 @@ const CartPage = () => {
 
       </div>
     </div>
-      <Footer />
+     
         </>
   );
 };

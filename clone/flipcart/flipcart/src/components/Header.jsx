@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Link } from 'react-router-dom'
 
 function Header() {
   const [searchQuery, setSearchQuery] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (searchQuery.toLowerCase() === 'fashion') {
-        history.push('/randomimages');
+      if (searchQuery) {
+        navigate(`/search?q=${searchQuery}`);
       }
     }
   };
@@ -19,10 +19,12 @@ function Header() {
     <>
     <header className="bg-white h-[60px] w-full  flex items-center justify-between px-4 border-b-2 border-gray-200 sticky top-0 p-9 mb-7">
         {/* Logo */}
-        <div className="flex flex-col pr-40">
-          <span className="text-[#2874F0] font-sans font-bold text-[20px]">Flipkart</span>
-          <span className="text-[#FDBA12] font-sans italic text-[12px]">Explore Plus</span>
-        </div>
+        <Link to="/">
+          <div className="flex flex-col pr-40">
+            <span className="text-[#2874F0] font-sans font-bold text-[20px]">Flipkart</span>
+            <span className="text-[#FDBA12] font-sans italic text-[12px]">Explore Plus</span>
+          </div>
+        </Link>
 
         {/* Search Bar */}
         <div className="flex-1 mx-4">

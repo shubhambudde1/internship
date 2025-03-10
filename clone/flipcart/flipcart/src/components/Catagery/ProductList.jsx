@@ -92,9 +92,9 @@ export default function ProductList() {
         </div>
       </aside>
       <main className="w-3/4 p-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="bg-yellow grid grid-cols-2 md:grid-cols-3 mb-10">
           {products.map((product, index) => (
-            <div key={index} className="bg-white shadow ">
+            <div key={index} className="bg-red shadow mb-1">
               <Link to={`/product/${product.id}`}>
                 
               <ProductCard product={product} />

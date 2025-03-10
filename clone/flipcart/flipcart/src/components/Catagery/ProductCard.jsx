@@ -22,11 +22,11 @@ const ProductCard = ({ product }) => {
   return (
     <>
       
-    <div className="bg-white rounded-lg p-2 mr-[-80px] w-70 h-full">
+    <div className="bg-white  p-3  w-88 h-full shadow-lg transition-transform duration-300 hover:scale-105">
       <img
         src={product.image}
         alt={product.name}
-        className="w-full h-48 object-cover"
+        className="w-full h-58 object-cover"
         />
 {product.isBestseller && (
   <span className="inline-block bg-yellow-200 text-yellow-700 px-2 py-1 rounded mt-2">
