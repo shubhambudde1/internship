@@ -1,10 +1,45 @@
 import React, { useState } from "react";
 import { FaShoppingCart, FaTag, FaInfoCircle, FaStar } from "react-icons/fa";
 import { colors, sizes } from '../data/productData';
+import { Star } from 'lucide-react';
+import dummyProducts from './Catagery/dummyProducts';
 
-const ProductDetail = () => {
+// Reviews Component
+function Reviews({ reviews }) {
+  return (
+    <div className="mt-6">
+      <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
+      {reviews.map((review, index) => (
+        <div key={index} className="mb-4 p-4 border rounded shadow-sm">
+          <div className="flex items-center mb-2">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                size={20}
+                className={
+                  i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+                }
+              />
+            ))}
+          </div>
+          <p className="text-gray-600">{review.comment}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const ProductDetail = ({ productId }) => {
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
+  const product = dummyProducts.find(p => p.id === productId);
+  const [reviews, setReviews] = useState(product.reviews || []);
+  const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
+
+  const handleAddReview = () => {
+    setReviews([newReview, ...reviews]);
+    setNewReview({ rating: 0, comment: '' });
+  };
 
   return (
     <div className="w-2 h-full min-h-screen p-6 bg-gray-100">
@@ -40,7 +75,7 @@ const ProductDetail = () => {
             <span className="text-gray-500">(178 ratings and 5 reviews)</span>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-800">Men's Casual T-Shirt</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
 
           <div className="mt-4">
             <h2 className="text-lg font-semibold text-gray-700">Color</h2>
@@ -105,6 +140,31 @@ const ProductDetail = () => {
           <div className="mt-2 text-gray-600">
             <span>Cash on Delivery available </span>
             <span className="text-blue-500">?</span>
+          </div>
+          <Reviews reviews={reviews} />
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4">Add atr5656676767 Review</h2>
+            <div className="flex mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={30}
+                  className={
+                    i < newReview.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+                  }
+                  onClick={() => setNewReview({ ...newReview, rating: i + 1 })}
+                />
+              ))}
+            </div>
+            <textarea
+              className="w-full p-2 border rounded"
+              placeholder="Write your review..."
+              value={newReview.comment}
+              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+            />
+            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded" onClick={handleAddReview}>
+              Submit Review
+            </button>
           </div>
         </div>
       </div>

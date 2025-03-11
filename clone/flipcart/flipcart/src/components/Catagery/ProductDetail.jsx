@@ -1,7 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { Star } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { dummyProducts } from './dummyProducts';
+import dummyProducts from './dummyProducts';
 import { CartContext } from './CartContext';
+
+
 
 
 
@@ -12,12 +15,32 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
   const { dispatch } = useContext(CartContext);
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState({ rating: product.rating, comment: "" });
+
+  useEffect(() => {
+    if (product) {
+      setReviews(product.reviews || []);
+    }
+  }, [product]);
+  
+  const handleAddReview = () => {
+    const updatedReviews = [...reviews, newReview];
+    setReviews(updatedReviews);
+    setNewReview({ rating: 0, comment: "" });
+    const updatedProduct = { ...product, reviews: updatedReviews };
+    const productIndex = dummyProducts.findIndex((p) => p.id === product.id);
+    dummyProducts.splice(productIndex, 1, updatedProduct);
+  };
+
+
 
   if (!product) {
     return <div>Product not found</div>;
   }
 
   const handleAddToCart = () => {
+    
     dispatch({
       type: 'ADD_TO_CART',
       payload: { ...product, selectedColor, selectedSize }
@@ -39,11 +62,7 @@ const ProductDetail = () => {
 
         {/* Product Details */}
         <div className="w-full md:w-1/2">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-yellow-500">★</span>
-            <span className="text-gray-700">4.2</span>
-            <span className="text-gray-500">(178 ratings and 5 reviews)</span>
-          </div>
+         
 
           <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
 
@@ -101,7 +120,9 @@ const ProductDetail = () => {
               ADD TO CART
             </button>
             <button className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600">
-              BUY NOW
+            <a href="#" className="text-white">
+            BUY NOW
+          </a>
             </button>
           </div>
 
@@ -114,6 +135,119 @@ const ProductDetail = () => {
             <span>Cash on Delivery available </span>
             <span className="text-blue-500">?</span>
           </div>
+          <div className="mt-4">
+            <h2 className="flex items-center gap-2">
+              REVIEWS ({reviews.length + 3})
+              <div className="flex items-center gap-0.3">
+
+              <span className="font-semibold text-black">{product.rating}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L6.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              </div>
+              <span className="text-blue-500 cursor-pointer" onClick={() => document.getElementById('reviewForm').style.display = 'block'}>add reviews</span>
+            </h2>
+          </div>
+            <div id="reviewForm" style={{ display: 'none' }}>
+          <div className="flex items-center gap-2 mb-4">
+            {[...Array(5)].map((_, i) => (
+               <Star
+               key={i}
+               size={30}
+               className={
+                 i < newReview.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+               }
+               onClick={() => setNewReview({ ...newReview, rating: i + 1 })}
+               />
+            ))}
+
+
+
+          </div>
+          <div className="mt-4">
+            <textarea
+              value={newReview.comment}
+              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+              placeholder="Write a review..."
+              className="w-full h-24 border-2 border-gray-300 rounded-md p-2"
+            />
+          </div>
+          <div className="flex items-center gap-2 mt-4">
+            <button
+              className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600"
+              onClick={handleAddReview}
+            >
+              ADD REVIEW
+            </button>
+          </div>
+        </div>
+{/* // Display the reviews below the review form */}
+<div className="mt-6">
+  <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
+  <div className="mb-4 p-4 border rounded shadow-sm">
+    <div className="flex items-center mb-2">
+      {[...Array(3)].map((_, i) => (
+        <Star
+          key={i}
+          size={20}
+          className={
+            i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+          }
+        />
+      ))}
+    </div>
+  
+      <p className="text-gray-600"> This product is amazing! Highly recommend it to everyone.</p>
+  </div>
+  <div className="mb-4 p-4 border rounded shadow-sm">
+    <div className="flex items-center mb-2">
+      {[...Array(3)].map((_, i) => (
+        <Star
+          key={i}
+          size={20}
+          className={
+            i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+          }
+        />
+      ))}
+    </div>
+  
+      <p className="text-gray-600"> Highly recommend it to everyone.</p>
+  </div>
+  <div className="mb-4 p-4 border rounded shadow-sm">
+    <div className="flex items-center mb-2">
+      {[...Array(2)].map((_, i) => (
+        <Star
+          key={i}
+          size={20}
+          className={
+            i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+          }
+        />
+      ))}
+    </div>
+  
+      <p className="text-gray-600"> default in packeding</p>
+  </div>
+
+  {reviews.map((review, index) => (
+    <div key={index} className="mb-4 p-4 border rounded shadow-sm">
+      <div className="flex items-center mb-2">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            size={20}
+            className={
+              i < review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+            }
+          />
+        ))}
+      </div>
+      <p className="text-gray-600">{review.comment}</p>
+    </div>
+  ))}
+</div>
+
         </div>
       </div>
     </div>
