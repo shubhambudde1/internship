@@ -78,7 +78,8 @@ const CartPage = () => {
       </p>
       <button
         className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 squared-full  mt-4 w-full "
-        onClick={() => alert('Checkout functionality is not implemented')}
+        // onClick={() => alert('Checkout functionality is not implemented')}
+        onClick={() => window.location.href = '/checkout'}
       >
         Checkout
       </button>

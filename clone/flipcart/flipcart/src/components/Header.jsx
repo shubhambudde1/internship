@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import profile from "../assets/profile/p.png"
+import Loginprofile from "../assets/profile/images.jpeg"
 
 import { Link } from 'react-router-dom'
 
 function Header() {
+  const [showLoging, setShowLoging] = useState(false);
+
+  useEffect(() => {
+    const storedShowLogin = localStorage.getItem('showLogin');
+    if (storedShowLogin) {
+      setShowLoging(JSON.parse(storedShowLogin));
+    }
+  }, []);
+
+
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -72,21 +84,14 @@ function Header() {
           <a href="#" className="text-[#212121] font-sans text-[14px] mr-14">
             Become a Seller
           </a>
-          {/* 3 dots */}
+          {/* profile image */}
           <div className="flex items-center">
-            <svg
-              className="w-[20px] h-[20px] text-[#212121]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-              />
-            </svg>
+<img
+  src={showLoging ? Loginprofile : profile}
+  alt="Profile"
+  className="w-8 h-8 rounded-full object-cover"
+/>
+
           </div>
         </div>
       </header>

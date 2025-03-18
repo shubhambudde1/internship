@@ -1,9 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const [showLoging, setShowLoging] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const isMounted = useRef(false);
+  useEffect(() => {
+    if (isMounted.current) {
+      localStorage.setItem('showLogin', JSON.stringify(showLoging));
+    } else {
+      isMounted.current = true;
+      const showLogin = localStorage.getItem('showLogin');
+      if (showLogin) {
+        setShowLoging(JSON.parse(showLogin));
+        console.log(showLogin);
+      }
+    }
+  }, [showLoging]);
+
+  const handleLogin = () => {
+    const storedEmail = localStorage.getItem('email');
+    const storedPassword = localStorage.getItem('password');
+
+    if (email === storedEmail && password === storedPassword) {
+      alert('Login successful!');
+      setShowLoging(true);
+      navigate('/');
+    } else {
+      alert('Invalid email or password!');
+    }
+  };
+
   return (
     <div className="flex h-screen">
-      {/* Left Section */}
       <div className="w-1/3 bg-blue-600 text-white p-10 flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-4">Login</h1>
         <p>Get access to your Orders, Wishlist, and Recommendations</p>
@@ -16,7 +48,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right Section */}
       <div className="w-2/3 flex items-center justify-center p-10">
         <div className="max-w-md w-full">
           <h2 className="text-2xl font-semibold mb-6">Enter Email/Mobile number</h2>
@@ -24,11 +55,19 @@ const Login = () => {
             type="text"
             placeholder="Email/Mobile number"
             className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setPassword(e.target.value)}
           />
           <button
             className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600"
+            onClick={handleLogin}
           >
-            Request OTP
+            Submit
           </button>
           <p className="text-sm text-gray-500 mt-4">
             By continuing, you agree to Flipkart's{' '}
@@ -43,7 +82,7 @@ const Login = () => {
           </p>
           <p className="text-sm mt-6 text-center">
             New to Flipkart?{' '}
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="/signup" className="text-blue-600 hover:underline">
               Create an account
             </a>
           </p>

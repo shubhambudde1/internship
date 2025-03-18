@@ -8,8 +8,13 @@ import Main from './components/Main';
 import { CartProvider } from './components/Catagery/CartContext.jsx';
 import Login from './components/Login';
 import Header from './components/Header';
-
+import Checkout from './components/Checkout';
+import Welcome from './components/welcome'; // Import Welcome component
 import Footer from './components/Footer';
+import Signup from './components/Signup';
+import OrderHistory from './components/OrderHistory';
+
+
 
 const App = () => {
   return (
@@ -21,8 +26,11 @@ const App = () => {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/category/:category" element={<ProductList />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<CartPage />} />
-          
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/order-history" element={<OrderHistory />} />
         </Routes>
         <Footer />
       </Router>
