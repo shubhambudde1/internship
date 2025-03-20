@@ -22,7 +22,7 @@ const ProductCard = ({ product }) => {
   return (
     <>
       
-    <div className="bg-white  p-3  w-80 h-full shadow-lg transition-transform duration-300 hover:scale-105">
+    <div className="bg-white  p-3  w-86 h-full shadow-lg transition-transform duration-300 hover:scale-105">
       <img
         src={product.image}
         alt={product.name}

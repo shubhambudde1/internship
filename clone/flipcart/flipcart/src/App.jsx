@@ -13,6 +13,8 @@ import Welcome from './components/welcome'; // Import Welcome component
 import Footer from './components/Footer';
 import Signup from './components/Signup';
 import OrderHistory from './components/OrderHistory';
+import Dashboard from './components/Dashboard';
+import DProfil from './components/DProfile.jsx'; // Import DProfile component
 
 
 
@@ -31,6 +33,8 @@ const App = () => {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/DProfile" element={<DProfil />} />
         </Routes>
         <Footer />
       </Router>

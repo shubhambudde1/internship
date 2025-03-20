@@ -1,7 +1,11 @@
 // src/components/Checkout.jsx
-import React from 'react';
+import React, { useState } from 'react';
 
 function Checkout() {
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const total = cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
     const cartItems = cart.map((item) => ({
@@ -16,13 +20,16 @@ function Checkout() {
             date: new Date(),
             status: 'Pending',
             items: cartItems,
-            totalCost: total
+            totalCost: total,
+            name: name,
+            address: address,
+            phone: phone,
+            paymentMethod: paymentMethod
         };
         orders.push(newOrder);
         localStorage.setItem('orders', JSON.stringify(orders));
         alert('Order placed successfully!');
-        // localStorage.removeItem('cart');
-       
+        localStorage.removeItem('cart');
     };
 
     return (
@@ -36,23 +43,51 @@ function Checkout() {
                         <div className="mt-4">
                             <form>
                                 <div className="mb-4">
-                                    <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Name</label>
-                                    <input type="text" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" placeholder="Enter your name" />
+                                    <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
+                                        Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="name"
+                                        placeholder="Enter your name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
                                 </div>
                                 <div className="mb-4">
-                                    <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2">Address</label>
-                                    <input type="text" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="address" placeholder="Enter your address" />
+                                    <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2">
+                                        Address
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="address"
+                                        placeholder="Enter your address"
+                                        value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                    />
                                 </div>
                                 <div className="mb-4">
-                                    <label htmlFor="phone" className="block text-gray-700 text-sm font-bold mb-2">Phone</label>
-                                    <input type="tel" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="phone" placeholder="Enter your phone number" />
+                                    <label htmlFor="phone" className="block text-gray-700 text-sm font-bold mb-2">
+                                        Phone
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="phone"
+                                        placeholder="Enter your phone number"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                    />
                                 </div>
                                 <div className="mb-4">
                                     <label htmlFor="payment" className="block text-gray-700 text-sm font-bold mb-2">Payment Method</label>
-                                    <select className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="payment">
+                                    <select className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="payment" onChange={(e) => setPaymentMethod(e.target.value)}>
                                         <option>Credit Card</option>
                                         <option>PayPal</option>
                                         <option>Cash on Delivery</option>
+                                        
                                     </select>
                                 </div>
                             </form>

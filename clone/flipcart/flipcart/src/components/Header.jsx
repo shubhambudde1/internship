@@ -77,7 +77,17 @@ function Header() {
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 8h14l-2-8M10 16a1 1 0 112 0 1 1 0 01-2 0zm6 0a1 1 0 112 0 1 1 0 01-2 0z"
               />
             </svg>
-            <Link to="/cart" className="text-[#212121] font-sans text-[14px] mr-14">Cart</Link>
+            <Link
+              to="/cart"
+              className="relative text-[#212121] font-sans text-[14px] mr-14"
+            >
+              Cart
+              <span
+                className="absolute top-[-7px] right-[-15px] bg-transparent text-black font-sans font-bold text-[12px] px-[6px] py-[2px] rounded-[5px] ml-12"
+              >
+                {JSON.parse(localStorage.getItem('cart') || '[]').length}
+              </span>
+            </Link>
           </div>
 
           {/* Become a Seller */}
@@ -86,12 +96,13 @@ function Header() {
           </a>
           {/* profile image */}
           <div className="flex items-center">
-<img
-  src={showLoging ? Loginprofile : profile}
-  alt="Profile"
-  className="w-8 h-8 rounded-full object-cover"
-/>
-
+            <Link to="/dashboard">
+              <img
+                src={showLoging ? Loginprofile : profile}
+                alt="Profile"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            </Link>
           </div>
         </div>
       </header>
