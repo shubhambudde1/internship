@@ -15,6 +15,7 @@ import Signup from './components/Signup';
 import OrderHistory from './components/OrderHistory';
 import Dashboard from './components/Dashboard';
 import DProfil from './components/DProfile.jsx'; // Import DProfile component
+import Searchpage from './components/searchpage.jsx'; // Import Searchpage component
 
 
 
@@ -34,7 +35,8 @@ const App = () => {
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/DProfile" element={<DProfil />} />
+          <Route path="/search" element={<Searchpage />} />
+          <Route path="/DProfile" element={<DProfil />} /> 
         </Routes>
         <Footer />
       </Router>
