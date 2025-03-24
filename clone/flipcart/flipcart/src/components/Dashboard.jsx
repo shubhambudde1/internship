@@ -101,6 +101,12 @@ const Dashboard = () => {
                 Update Profile
               </button>
               <button
+                 onClick={() => navigate("/admin")}
+                className="bg-red-500 text-white px-4 py-2 rounded mt-5 ml-4"
+              >
+                admin
+              </button>
+              <button
                 onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded mt-5 ml-4"
               >

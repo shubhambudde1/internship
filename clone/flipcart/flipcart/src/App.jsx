@@ -16,6 +16,7 @@ import OrderHistory from './components/OrderHistory';
 import Dashboard from './components/Dashboard';
 import DProfil from './components/DProfile.jsx'; // Import DProfile component
 import Searchpage from './components/searchpage.jsx'; // Import Searchpage component
+import AdminDashboard from './components/AdminDashboard'; // Import AdminDashboard component
 
 
 
@@ -37,6 +38,8 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/search" element={<Searchpage />} />
           <Route path="/DProfile" element={<DProfil />} /> 
+          <Route path="/admin" element={<AdminDashboard />} />
+          
         </Routes>
         <Footer />
       </Router>
