@@ -28,7 +28,7 @@ const Login = () => {
     if (email === storedEmail && password === storedPassword) {
       alert('Login successful!');
       setShowLoging(true);
-      navigate('/');
+      navigate('/admin');
     } else {
       alert('Invalid email or password!');
     }
