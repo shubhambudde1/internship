@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-
+import ManageProducts1 from "./admin/dmanageproduct/manageorders";
+import ManageUsers from "./admin/ManageUsers";
+  import Analysis from "./admin/Analyst";
+  
 
 const ManageProducts = () => {
   const [products, setProducts] = useState(
@@ -7,6 +10,9 @@ const ManageProducts = () => {
   );
   const [showForm, setShowForm] = useState(false);
   const [Showtable, setShowtable] = useState(false);
+  const [product, setproduct] = useState(false);
+  const [analytics, setanalytics] = useState(false);
+  const [users, setusers] = useState(false);
   const [newProduct, setNewProduct] = useState({ name: "", price: "", rating: "" });
   const [editIndex, setEditIndex] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -42,49 +48,29 @@ const ManageProducts = () => {
         const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
         setOrders(storedOrders);
       }, []);
-    
+
       // Update order status
       const updateOrderStatus = (index, newStatus) => {
         const updatedOrders = [...orders];
         updatedOrders[index].status = newStatus;
         setOrders(updatedOrders);
         localStorage.setItem("orders", JSON.stringify(updatedOrders));
-      };
+    };
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Manage Products</h2>
-      <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowForm(true)}>Add Product</button>
-      <button className=" px-4 py-2 rounded italic text-sky-400" style={{fontStyle: "italic", fontFamily: "cursive"}} onClick={() => setShowtable((prev) => !prev)}>show Product</button>
-
+      <h2 className="text-xl font-bold mb-4">Dashbord</h2>
+      <button className=" px-4 py-2 rounded italic text-sky-400" style={{fontStyle: "italic", fontFamily: "cursive"}} onClick={() => setShowtable((prev) => !prev)}>add product</button>
+      {/* <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowForm(true)}>Add Product</button> */}
+      {/* <a href="./Manageproduct" className="px-4 py-2 rounded italic text-sky-400" style={{fontStyle: "italic", fontFamily: "cursive"}}>show Orders</a> */}
+      <button className=" px-4 py-2 rounded italic text-sky-400" style={{fontStyle: "italic", fontFamily: "cursive"}} onClick={() => setproduct((prev) => !prev)}>product list</button>
+      <button className=" px-4 py-2 rounded italic text-sky-400" style={{fontStyle: "italic", fontFamily: "cursive"}} onClick={() => setusers((prev) => !prev)}>users</button>
+      <button className=" px-4 py-2 rounded italic text-sky-400" style={{fontStyle: "italic", fontFamily: "cursive"}} onClick={() => setanalytics((prev) => !prev)}>analytics</button>
+      
       {Showtable && (
-      <table className="w-full mt-4 border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">#</th>
-            <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Price</th>
-            <th className="border border-gray-300 px-4 py-2">Rating</th>
-            <th className="border border-gray-300 px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr key={index} className="text-center">
-              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td className="border border-gray-300 px-4 py-2">{product.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{product.price}</td>
-              <td className="border border-gray-300 px-4 py-2">{product.rating}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2" onClick={() => handleEdit(index)}>Edit</button>
-                <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={() => handleDelete(index)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ManageProducts1 />
       )}
-    
+
 
       {showForm && (
         <div className="mt-6 p-4 border border-gray-300 rounded shadow-md">
@@ -118,6 +104,7 @@ const ManageProducts = () => {
       )}
 
     {/* adding the product configration */}
+    {product && (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Manage Orders</h1>
       {orders.length === 0 ? (
@@ -165,6 +152,13 @@ const ManageProducts = () => {
         </div>
       )}
     </div>
+    )}
+    {users && (
+    <ManageUsers />
+     )} 
+    {analytics && (
+      <Analysis />
+    )}
 
     </div>
   );

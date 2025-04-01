@@ -1,19 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [showLoging, setShowLoging] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const isMounted = useRef(false);
+
   useEffect(() => {
     if (isMounted.current) {
-      localStorage.setItem('showLogin', JSON.stringify(showLoging));
+      localStorage.setItem("showLogin", JSON.stringify(showLoging));
     } else {
       isMounted.current = true;
-      const showLogin = localStorage.getItem('showLogin');
+      const showLogin = localStorage.getItem("showLogin");
       if (showLogin) {
         setShowLoging(JSON.parse(showLogin));
         console.log(showLogin);
@@ -21,16 +23,38 @@ const Login = () => {
     }
   }, [showLoging]);
 
-  const handleLogin = () => {
-    const storedEmail = localStorage.getItem('email');
-    const storedPassword = localStorage.getItem('password');
+  // Function to handle login with backend authentication
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter email and password!");
+      return;
+    }
 
-    if (email === storedEmail && password === storedPassword) {
-      alert('Login successful!');
+    try {
+      const response = await axios.post("http://localhost:5001/api/auth/login", {
+        email,
+        password,
+      });
+// console.log(response);
+      const { user } = response.data; // Extract user data
+
+      // Store user info (excluding password) in localStorage
+      localStorage.setItem("currentUser", JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role }));
+      localStorage.setItem("isLoggedIn", "true");
+
       setShowLoging(true);
-      navigate('/admin');
-    } else {
-      alert('Invalid email or password!');
+
+      // Redirect based on role
+      if (user.role === "admin") {
+        alert("Admin login successful!");
+        navigate("/admin");
+      } else {
+        alert("User login successful!");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      alert("Invalid email or password!");
     }
   };
 
@@ -70,18 +94,18 @@ const Login = () => {
             Submit
           </button>
           <p className="text-sm text-gray-500 mt-4">
-            By continuing, you agree to Flipkart's{' '}
+            By continuing, you agree to Flipkart's{" "}
             <a href="#" className="text-blue-600 hover:underline">
               Terms of Use
-            </a>{' '}
-            and{' '}
+            </a>{" "}
+            and{" "}
             <a href="#" className="text-blue-600 hover:underline">
               Privacy Policy
             </a>
             .
           </p>
           <p className="text-sm mt-6 text-center">
-            New to Flipkart?{' '}
+            New to Flipkart?{" "}
             <a href="/signup" className="text-blue-600 hover:underline">
               Create an account
             </a>

@@ -19,3 +19,24 @@ localStorage.setItem("user", JSON.stringify({
   address: "123 Main Street, New York, NY",
   phone: "9876543210"
 }));
+
+Yp  copy lik to below
+Yp  copy lik to below
+Yp  copy lik to below
+Yp  copy lik to below
+
+v: Enter visual mode for character-wise selection.
+V: Enter visual mode for line-wise selection.
+y: Yank (copy) the selected text.
+p: Paste the copied text below the cursor.
+P: Paste the copied text above the cursor
+
+v: Enter visual mode.
+w: Move forward word by word.
+e: Move to the end of the current word.
+b: Move backward word by word.
+y: Yank (copy) the selected text.
+p: Paste the copied text below the cursor.
+P: Paste the copied text above the cursor..
+<!-- generate jwt token -->
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'));"

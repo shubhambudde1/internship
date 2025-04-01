@@ -53,7 +53,7 @@ function Header() {
         <div className="flex items-center space-x-6">
           {/* Login Button */}
           <div className="relative group">
-            <Link to="/login">
+            <Link to="/Login">
               <button className="bg-[#2874F0] text-white font-sans font-bold text-[14px] px-[20px] py-[10px] rounded-[5px] hover:bg-[#1a5dc4] flex items-center mr-14">
                 Login
                 <span className="ml-2">▼</span>
@@ -96,7 +96,7 @@ function Header() {
           </a>
           {/* profile image */}
           <div className="flex items-center">
-            <Link to="/dashboard">
+            <Link to="/admin">
               <img
                 src={showLoging ? Loginprofile : profile}
                 alt="Profile"
