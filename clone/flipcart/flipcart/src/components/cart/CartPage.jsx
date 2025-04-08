@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -66,7 +67,8 @@ const CartPage = () => {
         <p className="text-xl font-semibold">
           Total: ${getTotalPrice()}
         </p>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4"
+          onClick={() => toast.success("Order Completed")}>
           Checkout
         </button>
       </div>

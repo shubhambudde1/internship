@@ -1,60 +1,71 @@
 const express = require("express");
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 const db = require("./udb.cjs");
+// Multer configuration
+const storage = multer.diskStorage({
+    destination: './uploads',
+    filename: function (req, file, cb) {
+        console.log("file",file)
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    },
+});
 
-// Fetch all products
-router.get("/", (req, res) => {
-    db.query("SELECT * FROM products", (err, results) => {
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10000000 }, // 10MB limit
+}).single('image_path');
+
+// Get all products
+router.get('/', (req, res) => {
+    db.query('SELECT * FROM products', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });
 });
 
-// Add a new product
-router.post("/", (req, res) => {
-    const { name, price, stock } = req.body;
-    db.query("INSERT INTO products (name, price, stock) VALUES (?, ?, ?)", [name, price, stock], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id: result.insertId, name, price, stock });
-    });
-});
+router.post('/', upload, (req, res) => {
+    console.log("req.body",req.body)
+    const { name, price, stock, category } = req.body;
+    const image_path = req.file ? `/uploads/${req.file.filename}` : null;
 
-// Delete a product by ID
-router.delete("/:id", (req, res) => {
-    const productId = req.params.id;
-    db.query("DELETE FROM products WHERE id = ?", [productId], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ message: "Product deleted successfully" });
-    });
-});
-
-// Update a product by ID
-// Update a product by ID
-router.put("/:id", (req, res) => {
-    const productId = req.params.id;
-    const { name, price, stock } = req.body;
-  
-
-    // Ensure all required fields are provided
-    if (!name || !price || !stock) {
-        return res.status(400).json({ error: "Name, price, and stock are required" });
-    }
-
-    // Update the product in the database
     db.query(
-        "UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?",
-        [name, price, stock, productId],
+        'INSERT INTO products (name, price, stock, category, image_path) VALUES (?, ?, ?, ?, ?)',
+        [name, price, stock, category, image_path],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
-
-            // Check if the product was updated
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: "Product not found" });
-            }
-
-            res.json({ id: productId, name, price, stock, message: "Product updated successfully" });
+            res.json({ id: result.insertId, name, price, stock, category, image_path });
         }
     );
 });
+
+router.put('/:id', upload, (req, res) => {
+    const { name, price, stock, category } = req.body;
+    const image_path = req.file ? `/uploads/${req.file.filename}` : req.body.oldImagePath;
+    const productId = req.params.id;
+
+    db.query(
+        'UPDATE products SET name = ?, price = ?, stock = ?, category = ?, image_path = ? WHERE id = ?',
+        [name, price, stock, category, image_path, productId],
+        (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            db.query('SELECT * FROM products WHERE id = ?', productId, (err, results)=>{
+                if (err) return res.status(500).json({ error: err.message });
+                res.json(results[0]);
+            })
+        }
+    );
+});
+
+router.delete('/:id', (req, res) => {
+    const productId = req.params.id;
+    db.query('DELETE FROM products WHERE id = ?', productId, (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Product deleted' });
+    });
+});
+
+
 
 module.exports = router;
