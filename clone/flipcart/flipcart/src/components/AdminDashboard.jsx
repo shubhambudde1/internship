@@ -3,9 +3,15 @@ import ManageProducts1 from "./admin/dmanageproduct/manageorders";
 import ManageUsers from "./admin/ManageUsers";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ManageReviews from "./admin/ManageReviews";
 
 import { Tooltip } from "react-tooltip";
 import Analysis from "./admin/Analyst";
+import PaymentMethods from "./admin/PaymentMethods";
+import Reports from "./admin/OrderHeatmap";
+import ReturnReq from "./admin/ReturnReq";
+
+
 
 const ManageProducts = () => {
 
@@ -17,7 +23,9 @@ const ManageProducts = () => {
   const [product, setproduct] = useState(false);
   const [analytics, setanalytics] = useState(false);
   const [users, setusers] = useState(false);
+  const [showpaymentMethods, setShowpaymentMethods] = useState(false);
   const [newProduct, setNewProduct] = useState({
+ 
     name: "",
     price: "",
     stock: "",
@@ -25,6 +33,12 @@ const ManageProducts = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [orders, setOrders] = useState([]);
   const [darkMode, setDarkMode] = useState(false); // State for dark mode
+  const [Reviews, setReviews] = useState(false);
+  const [reports, setreports] = useState(false);
+  const [ReturnReqshow, setReturnReqshow] = useState(false);
+  
+  
+
 
   const handleSave = () => {
     let updatedProducts;
@@ -92,6 +106,7 @@ const ManageProducts = () => {
               setproduct(false);
               setusers(false);
               setanalytics(false);
+              setreports(false);
             }}
           >
             <Tooltip id="add-product-tooltip" content="Add a new product to the inventory" />
@@ -106,6 +121,7 @@ const ManageProducts = () => {
               setShowtable(false);
               setusers(false);
               setanalytics(false);
+              setreports(false);
             }}
           >
             <Tooltip id="manage-orders-tooltip" content="View and manage all orders" />
@@ -115,7 +131,7 @@ const ManageProducts = () => {
           <button
             className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
             style={{ fontStyle: "italic", fontFamily: "cursive" }}
-            onClick={() => {setusers(true); setShowtable(false); setproduct(false); setanalytics(false);}}
+            onClick={() => {setusers(true); setShowtable(false); setproduct(false); setanalytics(false);setreports(false);}}
             data-tooltip-id="users-tooltip"
             data-tooltip-content="Manage all users"
             data-tooltip-place="right"
@@ -131,7 +147,7 @@ const ManageProducts = () => {
           <button
             className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
             style={{ fontStyle: "italic", fontFamily: "cursive" }}
-            onClick={() => {setanalytics(true); setShowtable(false); setproduct(false); setusers(false);}}
+            onClick={() => {setanalytics(true); setShowtable(false); setproduct(false); setusers(false);setreports(false);}}
             data-tooltip-id="analytics-tooltip"
             data-tooltip-content="View sales and user analytics"
             data-tooltip-place="right"
@@ -142,6 +158,74 @@ const ManageProducts = () => {
           >
             <Tooltip id="analytics-tooltip" content="View sales and user analytics" />
             Analytics
+          </button>
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => {
+              setShowtable(false);
+              setproduct(false);
+              setusers(false);
+              setanalytics(false);
+              setreports(false);
+              setReviews(true);
+            }}
+          >
+         Reviews
+          </button>
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => {
+              setShowtable(false);
+              setproduct(false);
+              setusers(false);
+              setanalytics(false);
+              setreports(false);
+              setReviews(false);
+              setShowpaymentMethods(true);
+
+            }}
+          >
+           Paymethod
+          </button>
+      
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => {
+              setShowtable(false);
+              setproduct(false);
+              setusers(false);
+              setanalytics(false);
+              setReviews(false);setShowpaymentMethods(false);
+              setreports(true);
+
+            }}
+          >
+           reports
+          </button>
+    
+          
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => {
+              setShowtable(false);
+              setproduct(false);
+              setusers(false);
+              setanalytics(false);
+              setReviews(false);setShowpaymentMethods(false);
+              setreports(false);
+              setReturnReqshow(true);
+
+            }}
+          >
+          return 
           </button>
           <div className="border-b border-gray-600 "></div>
         </div>
@@ -344,12 +428,18 @@ const ManageProducts = () => {
           </div>
         )}
         <ToastContainer />
+      
 
         {users && <ManageUsers />}
         {analytics && <Analysis />}
+        {Reviews && <ManageReviews />}
+        {showpaymentMethods && <PaymentMethods />}
+        {reports && <Reports />}
+        {ReturnReqshow && <ReturnReq />}
       </div>
     </div>
   );
 };
+
 
 export default ManageProducts;

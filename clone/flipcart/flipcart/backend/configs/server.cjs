@@ -4,7 +4,8 @@ const db = require("./udb.cjs"); // Ensure this file exists and exports required
 const userRoutes = require("./users.cjs"); // Ensure this file exists and exports a router
 const productRoutes = require("./products.cjs"); // Ensure this file exists and exports a router
 const authRoutes = require("./auth.cjs"); // Ensure this file exists and exports a router
-
+const orderRoutes = require("./orders.cjs"); // Ensure this file exists and exports a router
+const Returnroute = require("./ReturnRequests.cjs"); // Ensure this file exists and exports a router
 const app = express();
 app.use(cors());
 app.use(express.json()); // Enable JSON parsing
@@ -14,6 +15,12 @@ app.use("/api/users", userRoutes);
 
 // Product management routes
 app.use("/api/products", productRoutes);
+
+// request components
+app.use("/api/returnr",Returnroute)
+
+app.use("/api/orders", orderRoutes);
+// Order management routes
 
 app.use("/api/auth", authRoutes);
 

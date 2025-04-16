@@ -4,7 +4,7 @@ import axios from "axios";
 
 const ManageProducts = () => {
     const [products, setProducts] = useState([]);
-    const [newProduct, setNewProduct] = useState({ name: "", price: "", stock: "", category: "", image_path: null, oldImagePath: null });
+    const [newProduct, setNewProduct] = useState({ name: "", price: "", stock: "", category: "", image_path: null, oldImagePath: null, discription: "" });
     const [isEditing, setIsEditing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -15,9 +15,6 @@ const ManageProducts = () => {
     const [newProductShow, setNewProductShow] = useState(false);
     const [cvupload, setCvupload] = useState(false);
 
-
-
- 
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -33,6 +30,7 @@ const ManageProducts = () => {
     const fetchProducts = () => {
         console.log("Fetching products...");
         axios.get("http://localhost:5001/api/products")
+
             .then(res => {
                 setProducts(res.data);
                 setTotalPosts(res.data.length);
@@ -49,29 +47,34 @@ const ManageProducts = () => {
     };
 
     const addProduct = async () => {
-        console.log("Adding product:", newProduct);
-        const formData = new FormData();
-        formData.append("name", newProduct.name);
-        formData.append("price", newProduct.price);
-        formData.append("stock", newProduct.stock);
-        formData.append("category", newProduct.category);
-        if (newProduct.image_path) {
-            formData.append("image_path", newProduct.image_path);
+        try {
+            console.log("Adding product:", newProduct);
+    
+            const formData = new FormData();
+            formData.append("name", newProduct.name);
+            formData.append("price", newProduct.price);
+            formData.append("stock", newProduct.stock);
+            formData.append("category", newProduct.category);
+            formData.append("discription", newProduct.description);
+            if (newProduct.image_path) {
+                formData.append("image_path", newProduct.image_path);
+            }
+    
+            console.log("FormData being sent:", Object.fromEntries(formData.entries()));
+    
+            const response = await axios.post("http://localhost:5001/api/products", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+    
+            console.log("Product added successfully:", response.data);
+            setProducts([...products, response.data]);
+            setNewProduct({ name: "", price: "", stock: "", category: "", image_path: null, oldImagePath: null });
+        } catch (err) {
+            console.error("Error adding product:", err.response?.data || err.message);
+            alert("Error adding product: " + (err.response?.data?.message || err.message));
         }
-
-       await axios.post("http://localhost:5001/api/products", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-            .then(res => {
-                console.log("Product added successfully:", res.data);
-                setProducts([...products, res.data]);
-                setNewProduct({ name: "", price: "", stock: "", category: "", image_path: null, oldImagePath: null });
-            })
-            .catch(err => { 
-                console.error("Error adding product:", err.response?.data?.message || err.message);
-                alert("Error adding product: " + err.response?.data?.message || err.message);});
     };
     
     const editProduct = (id) => {
@@ -91,6 +94,7 @@ const ManageProducts = () => {
         formData.append("price", newProduct.price);
         formData.append("stock", newProduct.stock);
         formData.append("category", newProduct.category);
+        formData.append("discription", newProduct.description);
         if (newProduct.image_path) {
             formData.append("image_path", newProduct.image_path);
         }
@@ -135,8 +139,8 @@ const ManageProducts = () => {
                 const text = e.target.result;
                 const lines = text.split("\n").slice(1);
                 const newProducts = lines.map(line => {
-                    const [name, price, stock, category, image_path] = line.split(",");
-                    return { name, price: parseFloat(price), stock: parseInt(stock), category, image_path: image_path };
+                    const [name, price, stock, category, image_path, discription] = line.split(",");
+                    return { name, price: parseFloat(price), stock: parseInt(stock), category, image_path: image_path, discription: discription };
                 }).filter(product => product.name && !isNaN(product.price) && !isNaN(product.stock));
 
                 if (newProducts.length > 0) {
@@ -144,11 +148,11 @@ const ManageProducts = () => {
                         axios.post("http://localhost:5001/api/products", product)
                     ))
                         .then(responses => {                            
-                            const addedProducts = responses.map(res => res.data);
-                            console.log("Products imported successfully:", addedProducts);
-                            setProducts([...products, ...addedProducts]);
-                            alert("Products imported successfully!");
-                        })
+                        const addedProducts = responses.map(res => res.data);
+                        console.log("Products imported successfully:", addedProducts);
+                        setProducts([...products, ...addedProducts]);
+                        alert("Products imported successfully!");
+                    })
                         
                         .catch(err => alert("Error importing products: " + err.response?.data?.message || err.message));
                 } else {
@@ -156,6 +160,137 @@ const ManageProducts = () => {
                 }
             };
             reader.readAsText(file);
+        }
+    };
+
+    const generateRandomProduct = async () => {
+        try {
+            console.log("Attempting to fetch random product...");
+            const payload = {
+                model: "deepseek-r1-distill-qwen-32b",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are a product generator for an e-commerce app.",
+                    },
+                    {
+                        role: "user",
+                        content: "Generate a random product with a name, price, stock, category, and description.",
+                    }
+                ],
+                temperature: 0.7
+            };
+    
+            console.log("Request Payload:", payload);
+    
+            const response = await axios.post("https://api.groq.com/openai/v1/chat/completions", payload, {
+                headers: {
+                    Authorization: `Bearer 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`,
+                    "Content-Type": "application/json"
+                }
+            });
+    
+            console.log("API Response:", response.data);
+    
+            const content = response.data.choices[0]?.message?.content;
+            if (!content) {
+                throw new Error("Invalid response format: 'content' field is missing.");
+            }
+    
+            // Extract product details from the response
+            const productDetails = content.match(/(?<=\*\*Product Name:\*\* ).*|(?<=\*\*Price:\*\* ).*|(?<=\*\*Stock:\*\* ).*|(?<=\*\*Category:\*\* ).*|(?<=\*\*Description:\*\* ).*/g);
+    
+            if (productDetails && productDetails.length === 5) {
+                const [name, price, stock, category, description] = productDetails;
+    
+                setNewProduct({
+                    name: name.trim(),
+                    price: parseFloat(price.replace("$", "").trim()),
+                    stock: parseInt(stock.replace("in stock", "").trim()),
+                    category: category.trim(),
+                    description: description.trim(),
+                    image_path: null,
+                    oldImagePath: null
+                });
+            } else {
+                console.error("Failed to extract product details from the response.");
+                alert("Failed to extract product details. Please check the API response format.");
+            }
+        } catch (error) {
+            console.error("Error fetching random product:", error);
+    
+            if (error.response) {
+                console.error("Response Data:", error.response.data);
+                console.error("Response Status:", error.response.status);
+                console.error("Response Headers:", error.response.headers);
+    
+                alert(`API Error: ${error.response.status} - ${error.response.data.message || "Unknown error"}`);
+            } else if (error.code === "ERR_NETWORK") {
+                alert("Network error: Unable to reach the GROQ API. Please check your internet connection or API URL.");
+            } else {
+                alert("Failed to generate random product details. Please try again later.");
+            }
+        }
+    };
+    
+    const generateProductDescription = async () => {
+        try {
+            console.log("Generating product description...");
+            const payload = {
+                model: "deepseek-r1-distill-qwen-32b",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an AI assistant that generates concise, two-line product descriptions for e-commerce platforms. Avoid including unnecessary content like '<think>' or additional context. Ensure the description is limited to two lines.",
+                    },
+                    {
+                        role: "user",
+                        content: `Generate a two-line product description for the following details:
+                        Title: ${newProduct.name || "Unnamed Product"}
+                        Category: ${newProduct.category || "General"}
+                        Keywords: ${newProduct.name || "product"}, ${newProduct.category || "category"}.`,
+                    }
+                ],
+                temperature: 0.7
+            };
+    
+            console.log("Request Payload:", payload);
+    
+            const response = await axios.post("https://api.groq.com/openai/v1/chat/completions", payload, {
+                headers: {
+                    Authorization: `Bearer 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`,
+                    "Content-Type": "application/json"
+                }
+            });
+    
+            console.log("API Response:", response.data);
+    
+            const content = response.data.choices[0]?.message?.content;
+            if (!content) {
+                throw new Error("Invalid response format: 'content' field is missing.");
+            }
+    
+            // Ensure the description is concise and limited to two lines
+            const twoLineDescription = content.split("\n").slice(0, 2).join(" ").trim();
+    
+            setNewProduct((prevProduct) => ({
+                ...prevProduct,
+                description: twoLineDescription,
+            }));
+        } catch (error) {
+            console.error("Error generating product description:", error);
+    
+            if (error.response) {
+                console.error("Response Data:", error.response.data);
+                console.error("Response Status:", error.response.status);
+                console.error("Response Headers:", error.response.headers);
+    
+                alert(`API Error: ${error.response.status} - ${error.response.data.message || "Unknown error"}`);
+            } else if (error.code === "ERR_NETWORK") {
+                alert("Network error: Unable to reach the AI API. Please check your internet connection or API URL.");
+            } else {
+                alert("Failed to generate product description. Please try again later.");
+            }
         }
     };
 
@@ -188,7 +323,12 @@ const ManageProducts = () => {
                         <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293 7.707a1 1 0 011.414 0L9 9.414V17a1 1 0 11-2 0V9.414l-1.293 1.293a1 1 0 11-1.414-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414l-3-3z" clipRule="evenodd" />
                     </svg>
                 </button>
-             
+                <button
+                    className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded ml-2"
+                    onClick={generateRandomProduct}
+                >
+                    Generate Random Product
+                </button>
             </div>
             <div className="mb-4">
                 {newProductShow && (
@@ -197,7 +337,7 @@ const ManageProducts = () => {
                             type="text"
                             name="name"
                             placeholder="Product Name"
-                            value={newProduct.name}
+                            value={newProduct.name || ""}
                             onChange={handleChange}
                             className="border border-gray-300 px-3 py-2 mr-2 rounded"
                         />
@@ -205,7 +345,7 @@ const ManageProducts = () => {
                             type="number"
                             name="price"
                             placeholder="Price"
-                            value={newProduct.price}
+                            value={newProduct.price || ""}
                             onChange={handleChange}
                             className="border border-gray-300 px-3 py-2 mr-2 rounded"
                         />
@@ -213,7 +353,7 @@ const ManageProducts = () => {
                             type="number"
                             name="stock"
                             placeholder="Stock"
-                            value={newProduct.stock}
+                            value={newProduct.stock || ""}
                             onChange={handleChange}
                             className="border border-gray-300 px-3 py-2 mr-2 rounded"
                         />
@@ -221,10 +361,17 @@ const ManageProducts = () => {
                             type="text"
                             name="category"
                             placeholder="Category"
-                            value={newProduct.category}
+                            value={newProduct.category || ""}
                             onChange={handleChange}
                             className="border border-gray-300 px-3 py-2 mr-2 rounded"
                         />
+                         <input
+                            type="text"
+                            name="description"
+                            placeholder="description"
+                            value={newProduct.description || ""}
+                            onChange={handleChange}
+                            className="border border-gray-300 px-3 py-2 mr-2 rounded" />
                         <input
                             type="file"
                             name="image_path"
@@ -234,6 +381,13 @@ const ManageProducts = () => {
                         />
                         <button onClick={addProduct} className="bg-blue-500 text-white px-4 py-2 rounded">Add Product</button>
                          <button onClick={saveProduct} className="bg-green-500 text-white px-4 py-2 rounded ml-2">Save Product</button>
+                         <button
+                            type="button"
+                            onClick={generateProductDescription}
+                            className="bg-purple-500 text-white px-4 py-2 rounded ml-2"
+                        >
+                            Generate Description
+                        </button>
                     </form>
                 )}
 
@@ -268,6 +422,7 @@ const ManageProducts = () => {
                         <th className="border border-gray-300 px-4 py-2">Price</th>
                         <th className="border border-gray-300 px-4 py-2">Stock</th>
                         <th className="border border-gray-300 px-4 py-2">Category</th>
+                        <th className="border border-gray-300 px-4 py-2">description</th>
                         <th className="border border-gray-300 px-4 py-2">Action</th>
                     </tr>
                 </thead>
@@ -284,6 +439,7 @@ const ManageProducts = () => {
                             <td className="border border-gray-300 px-4 py-2">₹{product.price}</td>
                             <td className="border border-gray-300 px-4 py-2">{product.stock}</td>
                             <td className="border border-gray-300 px-4 py-2">{product.category}</td>
+                            <td className="border border-gray-300 px-4 py-2">{product.description}</td>
                             <td className="border border-gray-300 px-4 py-2">
                                 <button onClick={() => deleteProduct(product.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
                                 <button onClick={() => editProduct(product.id)} className="bg-blue-500 text-white px-3 py-1 ml-2 rounded">Edit</button>
@@ -330,9 +486,6 @@ const ManageProducts = () => {
                 </button>
             
             </div>
-           
-
-
         </div>
     );
 };

@@ -1,11 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
 import { Star } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import dummyProducts from './dummyProducts';
 import { CartContext } from './CartContext';
-
-
-
 
 
 const ProductDetail = () => {
@@ -17,6 +15,8 @@ const ProductDetail = () => {
   const { dispatch } = useContext(CartContext);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: product.rating, comment: "" });
+  const [customerName, setCustomerName] = useState('');
+  
 
   useEffect(() => {
     if (product) {
@@ -24,15 +24,46 @@ const ProductDetail = () => {
     }
   }, [product]);
   
-  const handleAddReview = () => {
+
+  const handleAddReview = async () => {
     const updatedReviews = [...reviews, newReview];
     setReviews(updatedReviews);
     setNewReview({ rating: 0, comment: "" });
+    
     const updatedProduct = { ...product, reviews: updatedReviews };
     const productIndex = dummyProducts.findIndex((p) => p.id === product.id);
     dummyProducts.splice(productIndex, 1, updatedProduct);
-  };
+    localStorage.setItem('products', JSON.stringify(dummyProducts));
+    
+      try {
+        const reviewWithCustomerName = { ...newReview, customerName: customerName };
+        setCustomerName('');
+        const existingReviews = JSON.parse(localStorage.getItem('reviews')) || [];
+        const reviewIndex = existingReviews.findIndex((review) => review.productID === product.id);
+        if (reviewIndex !== -1) {
+          existingReviews[reviewIndex].reviews.push(reviewWithCustomerName);
+          
+        } else {
+          const currentTimestamp = new Date().toISOString();
+          const productReviewWithDate = { productID: product.id, productName: product.name, date: currentTimestamp, reviews: [reviewWithCustomerName] };
+          existingReviews.push(productReviewWithDate);
+        }
+        localStorage.setItem('reviews', JSON.stringify(existingReviews));
+        console.log('Reviews saved to localStorage:', existingReviews);
+        try {
+          const response = await axios.post('http://localhost:5001/api/returnr', existingReviews);
+          console.log('Reviews saved to database:', response.data);
+          
+        } catch (error) {
+          console.error('Failed to save reviews to database:', error);
+          
+        }
 
+
+      } catch (error) {
+        console.error('Failed to save reviews to localStorage:', error);
+      }
+    }
 
 
   if (!product) {
@@ -52,7 +83,7 @@ const ProductDetail = () => {
   return (
     <>
         
-    <div className="w-full h-full min-h-screen p-6 bg-gray-100">
+    <div className="w-full h-full min-h-screen p-6 bg-gray-100 ">
       {/* Product Image and Details */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Image Section */}
@@ -164,11 +195,19 @@ const ProductDetail = () => {
 
 
           </div>
+          <input
+              type="text"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder="Enter your name"
+              className="w-full border-2 border-gray-300 rounded-md p-2 mb-4"
+            />
+
           <div className="mt-4">
             <textarea
               value={newReview.comment}
               onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-              placeholder="Write a review..."
+              placeholder="Write a review..." 
               className="w-full h-24 border-2 border-gray-300 rounded-md p-2"
             />
           </div>
@@ -181,54 +220,54 @@ const ProductDetail = () => {
             </button>
           </div>
         </div>
-{/* // Display the reviews below the review form */}
-<div className="mt-6">
-  <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
-  <div className="mb-4 p-4 border rounded shadow-sm">
-    <div className="flex items-center mb-2">
-      {[...Array(3)].map((_, i) => (
-        <Star
-          key={i}
-          size={20}
-          className={
-            i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
-          }
-        />
-      ))}
-    </div>
-  
-      <p className="text-gray-600"> This product is amazing! Highly recommend it to everyone.</p>
-  </div>
-  <div className="mb-4 p-4 border rounded shadow-sm">
-    <div className="flex items-center mb-2">
-      {[...Array(3)].map((_, i) => (
-        <Star
-          key={i}
-          size={20}
-          className={
-            i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
-          }
-        />
-      ))}
-    </div>
-  
-      <p className="text-gray-600"> Highly recommend it to everyone.</p>
-  </div>
-  <div className="mb-4 p-4 border rounded shadow-sm">
-    <div className="flex items-center mb-2">
-      {[...Array(2)].map((_, i) => (
-        <Star
-          key={i}
-          size={20}
-          className={
-            i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
-          }
-        />
-      ))}
-    </div>
-  
-      <p className="text-gray-600"> default in packeding</p>
-  </div>
+        {/* // Display the reviews below the review form */}
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
+          <div className="mb-4 p-4 border rounded shadow-sm">
+            <div className="flex items-center mb-2">
+              {[...Array(3)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={20}
+                  className={
+                    i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+                  }
+                />
+              ))}
+            </div>
+
+            <p className="text-gray-600"> This product is amazing! Highly recommend it to everyone.</p>
+          </div>
+          <div className="mb-4 p-4 border rounded shadow-sm">
+            <div className="flex items-center mb-2">
+              {[...Array(3)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={20}
+                  className={
+                    i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+                  }
+                />
+              ))}
+            </div>
+
+            <p className="text-gray-600"> Highly recommend it to everyone.</p>
+          </div>
+          <div className="mb-4 p-4 border rounded shadow-sm">
+            <div className="flex items-center mb-2">
+              {[...Array(2)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={20}
+                  className={
+                    i < 5 ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'
+                  }
+                />
+              ))}
+            </div>
+
+            <p className="text-gray-600"> default in packeding</p>
+          </div>
 
   {reviews.map((review, index) => (
     <div key={index} className="mb-4 p-4 border rounded shadow-sm">
@@ -242,13 +281,15 @@ const ProductDetail = () => {
             }
           />
         ))}
+
       </div>
       <p className="text-gray-600">{review.comment}</p>
     </div>
   ))}
-</div>
-
         </div>
+        
+        </div>
+        
       </div>
     </div>
    
