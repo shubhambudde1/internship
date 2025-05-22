@@ -31,19 +31,56 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/', upload, (req, res) => {
-    console.log("req.body", req.body);
-    const { name, price, stock, category, discription } = req.body;
-    const image_path = req.file ? `/uploads/${req.file.filename}` : null;
+// router.post('/', upload, (req, res) => {
+//     console.log("req.body", req.body);
+//     const { name, price, stock, category, discription } = req.body;
+//     const image_path = req.file ? `/uploads/${req.file.filename}` : null;
 
-    db.query(
-        'INSERT INTO products (name, price, stock, category, image_path, discription) VALUES (?, ?, ?, ?, ?, ?)',
-        [name, price, stock, category, image_path, discription],
-        (err, result) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ id: result.insertId, name, price, stock, category, image_path, discription });
+//     db.query(
+//         'INSERT INTO products (name, price, stock, category,  image, discription) VALUES (?, ?, ?, ?, ?, ?)',
+//         [name, price, stock, category, image_path, discription],
+//         (err, result) => {
+//             if (err) return res.status(500).json({ error: err.message });
+//             res.json({ id: result.insertId, name, price, stock, category, image_path, discription });
+//         }
+//     );
+// });
+
+router.post('/', (req, res) => {
+    const { date, status, totalCost, name, address, phone, paymentMethod, products } = req.body;
+
+    const sql = `
+        INSERT INTO orders (date, status, totalCost, name, address, phone, paymentMethod, products)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    console.log("req.body", req.body);
+
+    db.query(sql, [date, status, totalCost, name, address, phone, paymentMethod, JSON.stringify(products)], (err, result) => {
+        if (err) {
+            console.error('Error inserting order:', err);
+            return res.status(500).json({ error: 'Database insert error' });
         }
-    );
+        res.json({ message: 'Order added successfully!', orderId: result.insertId });
+    });
+});
+
+router.get('/:id', (req, res) => {
+    const orderId = req.params.id;
+
+    db.query('SELECT * FROM orders WHERE id = ?', [orderId], (err, results) => {
+        if (err) {
+            console.error('Error fetching order:', err);
+            return res.status(500).json({ error: 'Database fetch error' });
+        }
+
+        if (results.length > 0) {
+            const order = results[0];
+            order.products = JSON.parse(order.products); // Parse the products JSON string
+            res.json(order);
+        } else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    });
 });
 
 router.put('/:id', upload, (req, res) => {
@@ -52,7 +89,7 @@ router.put('/:id', upload, (req, res) => {
     const productId = req.params.id;
 
     db.query(
-        'UPDATE products SET name = ?, price = ?, stock = ?, category = ?, image_path = ?, discription = ? WHERE id = ?',
+        'UPDATE products SET name = ?, price = ?, stock = ?, category = ?,  image = ?, discription = ? WHERE id = ?',
         [name, price, stock, category, image_path, discription, productId],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
@@ -66,7 +103,7 @@ router.put('/:id', upload, (req, res) => {
 
 router.delete('/:id', (req, res) => {
     const productId = req.params.id;
-    db.query('SELECT image_path FROM products WHERE id = ?', productId, (err, results) => {
+    db.query('SELECT  image  FROM products WHERE id = ?', productId, (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         if (results.length > 0 && results[0].image_path) {
             const imagePath = path.join(__dirname, '..', results[0].image_path);

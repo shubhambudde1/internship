@@ -6,21 +6,7 @@ const Signup = () => {
   const [name, setName] = useState(""); // Added name field
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
-  // Fetch existing users
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get("http://localhost:5001/api/users");
-        setUsers(res.data);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-    };
-    fetchUsers();
-  }, []);
 
   // Handle user signup
   const handleSignup = async () => {
@@ -29,20 +15,21 @@ const Signup = () => {
       return;
     }
 
-    const newUser = { name, email, password };
-
+    const newUser = { name, email, password, role: "user" }; // Added default role
     try {
-      const res = await axios.post("http://localhost:5001/api/users", newUser);
-      const savedUser = res.data;
-
-      // Store only user ID in localStorage (not password!)
-      localStorage.setItem("currentUser", JSON.stringify({ id: savedUser.id, name: savedUser.name, email: savedUser.email, role: savedUser.role }));
-      localStorage.setItem("isLoggedIn", "true");
-
-      setUsers((prevUsers) => [...prevUsers, savedUser]);
-
-      alert("Signup successful!");
-      navigate("/");
+      const response = await axios.post(
+        "http://localhost:5001/api/users/signup",
+        newUser
+      );
+      if (response.status === 201) {
+        const { user } = response.data;
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        localStorage.setItem("isLoggedIn", "true");
+        alert("Signup successful!");
+        navigate("/");
+      } else {
+        alert("Signup failed. Please try again.");
+      }
     } catch (err) {
       console.error("Error creating user:", err);
       alert("Signup failed. Please try again.");
@@ -51,12 +38,7 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (users.some((user) => user.email === email)) {
-      alert("User already exists!");
-    } else {
-      handleSignup();
-    }
+    handleSignup();
   };
 
   return (

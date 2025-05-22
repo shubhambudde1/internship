@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import profile from "../assets/profile/p.png"
-import Loginprofile from "../assets/profile/images.jpeg"
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import profile from "../assets/profile/p.png";
+import Loginprofile from "../assets/profile/images.jpeg";
+import Notification from "./notification";
 
-import { Link } from 'react-router-dom'
+
+import { Link } from "react-router-dom";
 
 function Header() {
   const [showLoging, setShowLoging] = useState(false);
 
   useEffect(() => {
-    const storedShowLogin = localStorage.getItem('showLogin');
+    const storedShowLogin = localStorage.getItem("showLogin");
     if (storedShowLogin) {
       setShowLoging(JSON.parse(storedShowLogin));
     }
   }, []);
 
-
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       if (searchQuery) {
         navigate(`/search?q=${searchQuery}`);
@@ -29,12 +30,16 @@ function Header() {
   };
   return (
     <>
-    <header className="bg-white h-[60px] w-full  flex items-center justify-between px-4 border-b-2 border-gray-200 sticky top-0 p-9 mb-7">
+      <header className="bg-white h-[60px] w-full  flex items-center justify-between px-4 border-b-2 border-gray-200 sticky top-0 p-9 mb-7">
         {/* Logo */}
         <Link to="/">
           <div className="flex flex-col pr-40">
-            <span className="text-[#2874F0] font-sans font-bold text-[20px]">Flipkart</span>
-            <span className="text-[#FDBA12] font-sans italic text-[12px]">Explore Plus</span>
+            <span className="text-[#2874F0] font-sans font-bold text-[20px]">
+              Flipkart
+            </span>
+            <span className="text-[#FDBA12] font-sans italic text-[12px]">
+              Explore Plus
+            </span>
           </div>
         </Link>
 
@@ -82,19 +87,31 @@ function Header() {
               className="relative text-[#212121] font-sans text-[14px] mr-14"
             >
               Cart
-              <span
-                className="absolute top-[-7px] right-[-15px] bg-transparent text-black font-sans font-bold text-[12px] px-[6px] py-[2px] rounded-[5px] ml-12"
-              >
-                {JSON.parse(localStorage.getItem('cart') || '[]').length}
+              <span className="absolute top-[-7px] right-[-15px] bg-transparent text-black font-sans font-bold text-[12px] px-[6px] py-[2px] rounded-[5px] ml-12">
+                {JSON.parse(localStorage.getItem("cart") || "[]").length}
               </span>
             </Link>
           </div>
 
           {/* Become a Seller */}
+          
           <a href="#" className="text-[#212121] font-sans text-[14px] mr-14">
             Become a Seller
           </a>
+          
+          <div className="border-l border-gray-300 h-6">
+            <Link to="/userDashbord">
+            aaa
+            </Link>
+          </div>
+          {/* notification */}
+          
+            <Notification />
+          
+
           {/* profile image */}
+          
+          
           <div className="flex items-center">
             <Link to="/admin">
               <img
@@ -107,7 +124,7 @@ function Header() {
         </div>
       </header>
     </>
-  )
+  );
 }
 
-export default Header
+export default Header;

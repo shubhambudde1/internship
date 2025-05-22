@@ -1,119 +1,46 @@
 const express = require('express');
 const router = express.Router();
 const db = require("./udb.cjs");
+const moment = require('moment');
+const date = moment().format('YYYY-MM-DD HH:mm:ss'); // Define the date variable
 
-// // Check database connection
+// Check database connection
 // db.connect((err) => {
 //     if (err) {
 //         console.error('Database connection failed:', err);
 //         return;
 //     }
-//     console.log('Database connected successfully!');
+//     console.log('Database order connected successfully!');
 // });
 
-
-const moment = require('moment');
-
- 
-// POST: Add a new order and its items
+// POST route to insert a new order
 router.post('/', (req, res) => {
-  const { date, status, totalCost, name, address, phone, paymentMethod, items } = req.body;
+  const { status, totalCost, name, address, phone, paymentMethod, items, products } = req.body;
+  console.log('Received data:', req.body); // Log the entire request body
+  console.log('Products:', products); // Specifically log the products field
 
-  // Format the date correctly
-  const formattedDate = moment(date, moment.ISO_8601, true).isValid()
-    ? moment(date).format('YYYY-MM-DD HH:mm:ss')
-    : moment().format('YYYY-MM-DD HH:mm:ss'); // Use current date if date is invalid
+  if (!products) {
+    return res.status(400).send({ message: 'Products field is missing or null' });
+  }
 
-  // Insert the order into the `orders` table
-console.log(req.body);
-  const orderQuery = `
-    INSERT INTO orders (date, status, totalCost, name, address, phone, paymentMethod)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
-  const orderValues = [
-    formattedDate,
-    status || 'Pending',
-    totalCost || 0,
-    name,
-    address,
-    phone,
-    paymentMethod,
-  ];
-
-  db.query(orderQuery, orderValues, (err, result) => {
+  const sql = 'INSERT INTO orders (date, status, totalCost, name, address, phone, paymentMethod, products) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(sql, [date, status, totalCost, name, address, phone, paymentMethod, products], (err, result) => {
     if (err) {
-      console.error('Error inserting order into the database:', err);
-      res.status(500).json({ message: 'Failed to place the order.' });
-      return;
+      console.error('Error inserting data:', err);
+      return res.status(500).send({ message: 'Database insert error' });
     }
-
-    const orderId = result.insertId;
-
-    // Insert the items into the `order_items` table
-    const itemQuery = `
-      INSERT INTO order_items (order_id, product_name, price, quantity)
-      VALUES ?
-    `;
-    const itemValues = items.map((item) => [
-      orderId,
-      item.name,
-      item.price,
-      item.quantity || 1, // Default quantity to 1 if null
-    ]);
-
-    db.query(itemQuery, [itemValues], (err) => {
-      if (err) {
-        console.error('Error inserting items into the database:', err);
-        res.status(500).json({ message: 'Failed to place the order items.' });
-        return;
-      }
-
-      res.status(201).json({ message: 'Order placed successfully', orderId });
-    });
+    res.send({ message: 'Order added successfully!', orderId: result.insertId });
   });
 });
-
-// GET: Retrieve all orders with their items
+// GET route to retrieve all orders
 router.get('/', (req, res) => {
-  const query = `
-    SELECT o.*, i.product_name, i.price, i.quantity
-    FROM orders o
-    LEFT JOIN order_items i ON o.id = i.order_id
-  `;
-
-  db.query(query, (err, results) => {
+  const sql = 'SELECT * FROM orders';
+  db.query(sql, (err, result) => {
     if (err) {
-      console.error('Error retrieving orders from the database:', err);
-      res.status(500).json({ message: 'Failed to retrieve orders.' });
-      return;
+      console.error('Error retrieving data:', err);
+      return res.status(500).send({ message: 'Database retrieval error' });
     }
-
-    // Group items by order
-    const orders = results.reduce((acc, row) => {
-      const { id, date, status, totalCost, name, address, phone, paymentMethod, product_name, price, quantity } = row;
-
-      if (!acc[id]) {
-        acc[id] = {
-          id,
-          date,
-          status,
-          totalCost,
-          name,
-          address,
-          phone,
-          paymentMethod,
-          items: [],
-        };
-      }
-
-      if (product_name) {
-        acc[id].items.push({ product_name, price, quantity });
-      }
-
-      return acc;
-    }, {});
-
-    res.status(200).json(Object.values(orders));
+    res.send(result);
   });
 });
 

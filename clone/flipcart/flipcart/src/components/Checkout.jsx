@@ -9,7 +9,6 @@ function Checkout() {
   const [phone, setPhone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('Credit Card');
 
-
   // Ensure price and quantity are numbers
   const cartItems = cart.map((item) => ({
     ...item,
@@ -28,29 +27,64 @@ function Checkout() {
       date: new Date(),
       status: 'Pending',
       items: cartItems,
+      products: JSON.stringify(cartItems.map(item => item.id)), // Convert product IDs to JSON string
       totalCost: totalPrice,
       name: name,
       address: address,
       phone: phone,
       paymentMethod: paymentMethod,
     };
+    console.log('New Order:', newOrder);
+
+    const rewardLoyelty = {
+      date: new Date(),
+      user_id: 1, // Replace with actual user ID
+      type: 'purchase', // Trimmed value
+      points: Math.floor(totalPrice / 1000) * 50,
+      description: `Purchase worth $${totalPrice}`,
+    };
 
     try {
       // Send the order to the backend
       const response = await axios.post('http://localhost:5001/api/orders', newOrder);
-      // Handle the response from the backend
       console.log('Order placed successfully:', response.data);
-      
 
-      if (response.status === 201) {
+      if (response.status === 200 || response.status === 201) {
+        // Retrieve existing orders from localStorage
+        const existingOrders = JSON.parse(localStorage.getItem('allOrders')) || [];
+
+        // Add the new order to the array
+        existingOrders.push(newOrder);
+
+        // Store the updated array back in localStorage
+        localStorage.setItem('allOrders', JSON.stringify(existingOrders));
+
+        // Store the current order and products separately
+        localStorage.setItem('lastOrder', JSON.stringify(newOrder));
+        localStorage.setItem('orderedProducts', JSON.stringify(cartItems)); // Store products in localStorage
+
         alert('Order placed successfully!');
         localStorage.removeItem('cart'); // Clear the cart
+        window.location.href = '/'; // Redirect to the home page
       } else {
         alert('Failed to place the order. Please try again.');
       }
     } catch (error) {
       console.error('Error placing order:', error);
       alert('An error occurred while placing the order.');
+    }
+
+    try {
+      const rewardResponse = await axios.post('http://localhost:5001/api/rewardLoyelty', rewardLoyelty);
+      if (rewardResponse.status === 200 || rewardResponse.status === 201) {
+        console.log('Loyalty points rewarded successfully:', rewardResponse.data);
+      } else {
+        console.error('Failed to reward loyalty points:', rewardResponse);
+        alert('Failed to reward loyalty points. Please contact support.');
+      }
+    } catch (error) {
+      console.error('Error rewarding loyalty points:', error);
+      alert('An error occurred while rewarding loyalty points.');
     }
   };
 

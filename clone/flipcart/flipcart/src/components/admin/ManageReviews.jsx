@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 function ManageReviews() {
   const [reviews, setReviews] = useState([]);
-  const [filteredReviews, setFilteredReviews] = useState([]);
+  const [filteredReviews, setFilteredReviews] = useState([]); // Initialize as empty array
   const [searchQuery, setSearchQuery] = useState('');
   const [productFilter, setProductFilter] = useState('');
   const [ratingFilter, setRatingFilter] = useState({ min: 0, max: 5 });
@@ -14,7 +14,15 @@ function ManageReviews() {
 
   useEffect(() => {
     const storedReviews = JSON.parse(localStorage.getItem('reviews')) || [];
-    setReviews(storedReviews);
+    // Adjust to handle the nested structure
+    const formattedReviews = storedReviews.reduce((acc, productReview) => {
+      return acc.concat(
+        productReview.reviews.map(review => ({
+          ...review, productName: productReview.productName, date: productReview.date
+        }))
+      );
+    }, []);
+    setReviews(formattedReviews);
   }, []);
 
   useEffect(() => {
@@ -59,7 +67,7 @@ function ManageReviews() {
   };
 
   const handleRespond = (index) => {
-    alert(`Respond to review at index ${index}`);
+    alert(`Respond to review at index ${index}`); // Placeholder for respond functionality
   };
 
   const handleSearchChange = (event) => {

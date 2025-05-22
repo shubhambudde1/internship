@@ -4,12 +4,22 @@ import ManageUsers from "./admin/ManageUsers";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ManageReviews from "./admin/ManageReviews";
-
 import { Tooltip } from "react-tooltip";
 import Analysis from "./admin/Analyst";
 import PaymentMethods from "./admin/PaymentMethods";
 import Reports from "./admin/OrderHeatmap";
-import ReturnReq from "./admin/ReturnReq";
+import ReturnReq from "./admin/ReturnReq"; 
+import SellerManagement from "./admin/SellerManagement";
+import InventoryManage from "./admin/InventoryManagement";
+import CustomerManagement from "./admin/customers";
+import CouponManagement from "./admin/CouponManagement";
+import ReturnsManagement from "./admin/ReturnsManagement";
+import RecentlyViewed from "./admin/RecentlyViewed";
+import RecommendedProducts from "./admin/RecommendedProducts"
+import DynamicProduct from "./admin/DynamicProduct";
+import QASection from "./QandA/QASection";
+import OrderHistry from "./admin/OrderHistry";
+
 
 
 
@@ -36,6 +46,15 @@ const ManageProducts = () => {
   const [Reviews, setReviews] = useState(false);
   const [reports, setreports] = useState(false);
   const [ReturnReqshow, setReturnReqshow] = useState(false);
+  const [showsellerManage, setshowsellerManage] = useState(false);
+  const [InventoryManagement, setInventoryManagement] = useState(false);
+  const [showCustomer, setShowCustomer] = useState(false);
+  const [showcoupons, setShowcoupons] = useState(false);
+  const [showReturnOrder, setShowReturnOrder] = useState(false);
+  const [showRview, setshowReview] = useState(false);
+  const [showRecommend, setshowRecommend] = useState(false);
+  const [showDynamicProduct, setShowDynamicProduct] = useState(false);
+  const [showQASection, setShowQASection] = useState(false);
   
   
 
@@ -228,6 +247,111 @@ const ManageProducts = () => {
           return 
           </button>
           <div className="border-b border-gray-600 "></div>
+
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => {
+              setShowtable(false);
+              setproduct(false);
+              setusers(false);
+              setanalytics(false);
+              setReviews(false);setShowpaymentMethods(false);
+              setreports(false);
+              setReturnReqshow(false);
+              setshowsellerManage(true);
+              
+
+
+            }}
+          >
+         seller_admin
+          </button>
+          <div className="border-b border-gray-600 "></div>
+
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => {
+              setShowtable(false);
+              setproduct(false);
+              setusers(false);
+              setanalytics(false);
+              setReviews(false);setShowpaymentMethods(false);
+              setreports(false);
+              setReturnReqshow(false);
+              setshowsellerManage(false);
+              setInventoryManagement(true);
+              
+
+
+            }}
+          >
+         inventry
+          </button>
+          <div className="border-b border-gray-600 "></div>
+
+          
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => setShowCustomer(!showCustomer)}
+          >
+         CustomerManagement 
+          </button>
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => setShowcoupons(!showcoupons)}
+          >
+       coupons
+          </button>
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => setShowReturnOrder(!showReturnOrder)}
+          >
+       showReturnOrder
+          </button>
+          <div className="border-b border-gray-600 "></div>
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => setshowReview(!showRview)}
+          >
+       routeR_view
+          </button>
+          <div className="border-b border-gray-600 "></div>
+
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => setshowRecommend(!showRecommend)}
+          >
+                       Recommend
+          </button>
+          <div className="border-b border-gray-600 "></div>
+
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() =>  setShowDynamicProduct(!showDynamicProduct)}
+          >
+                       DynamicProduct
+          </button>
+          <div className="border-b border-gray-600 "></div>
+
+          <button
+            className="px-4  rounded italic text-white hover:bg-gray-800 hover:bg-gray-200 p-2"
+            style={{ fontStyle: "italic", fontFamily: "cursive" }}
+            onClick={() => setShowQASection(!showQASection)}
+          >
+                       QASection
+          </button>
+          <div className="border-b border-gray-600 "></div>
+
         </div>
       </div>
       {/* Main Content */}
@@ -258,6 +382,7 @@ const ManageProducts = () => {
 
 
         {Showtable && <ManageProducts1 />}
+
 
         {showForm && (
           <div className="mt-6 p-4 border border-gray-300 rounded shadow-md">
@@ -326,107 +451,8 @@ const ManageProducts = () => {
         )}
 
 
-        {product && (
-          <div className="p-6 max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-4">
-              <select
-                className="border border-gray-300 p-2 rounded"
-                onChange={(e) => {
-                  const selectedStatus = e.target.value;
-                  const filteredOrders = orders.filter(
-                    (order) => order.status === selectedStatus
-                  );
-                  setOrders(filteredOrders);
-                }}
-              >
-                <option value="">
-                  All
-                </option>
-                <option value="Departed">Departed</option>
-                <option value="Ready to Leave">Ready to Leave</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
+        {product && <OrderHistry />}
 
-
-
-            <h1 className="text-2xl font-bold mb-4">
-              Manage Orders
-            </h1>
-            {orders.length === 0 ? (
-              <p>No orders found.</p>
-            ) : (
-              <div className="space-y-4">
-                {orders.map((order, index) => (
-                  <div
-                    key={order.id}
-                    className="bg-white shadow-lg rounded-lg p-4"
-                  >
-                    <h2 className="text-xl font-semibold mb-2">
-                      Order #{order.id}
-                    </h2>
-                    <p className="text-gray-600">
-                      Date: {new Date(order.date).toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-600">Status: <span className="font-semibold">{order.status}</span>
-                    </p>
-                    <h3 className="text-lg font-semibold mt-4">Items:</h3>
-                    <ul className="list-disc list-inside">
-                      {order.items.map((item, idx) => (
-                        <li key={idx}>
-                          {item.name} - ${item.price} x {item.quantity}
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="text-gray-800 font-semibold mt-4">
-                      Total Cost: $
-                      {order.totalCost
-                        ? order.totalCost.toFixed(2)
-                        : "N/A"}
-                    </p>
-                    <div className="mt-4 flex gap-2">
-                      <button
-                        className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-                        onClick={() => {
-                          <Tooltip id="ready-to-leave-tooltip" content="Mark the order as ready to leave" />
-
-                          updateOrderStatus(index, "Ready to Leave");
-                          toast.success("Order is Ready to Leave");
-                        }}
-                      >
-                        Ready to Leave
-                      </button>
-                      <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                        data-tooltip-id="departed-tooltip"
-                        onClick={() => {
-                          updateOrderStatus(index, "Departed");
-                          toast.info("Order has Departed");
-                        }}
-                      >
-                        Departed
-                      </button>
-                      <button
-                        data-tooltip-id="completed-tooltip"
-                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                        onClick={() => {
-                          updateOrderStatus(index, "Completed");
-                          toast.success("Order Completed");
-                        }}
-                      >
-                        Completed
-                      </button>
-                      <Tooltip id="ready-to-leave-tooltip" content="Mark the order as ready to leave" />
-                      <Tooltip id="departed-tooltip" content="Mark the order as departed" />
-                      <Tooltip id="completed-tooltip" content="Mark the order as completed" />
-
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
         <ToastContainer />
       
 
@@ -436,6 +462,17 @@ const ManageProducts = () => {
         {showpaymentMethods && <PaymentMethods />}
         {reports && <Reports />}
         {ReturnReqshow && <ReturnReq />}
+        {showsellerManage && <SellerManagement />}
+        {InventoryManagement && <InventoryManage/>}
+        {showCustomer && <CustomerManagement/>}
+        {showcoupons && <CouponManagement/>}
+        {showReturnOrder && <ReturnsManagement/>}
+        {showRview && <RecentlyViewed userId={1}/>}
+        {showRecommend && <RecommendedProducts userId={21}/>}
+        {showDynamicProduct && <DynamicProduct />}
+        {showQASection && <QASection productId={1} userId={1} />}
+
+
       </div>
     </div>
   );

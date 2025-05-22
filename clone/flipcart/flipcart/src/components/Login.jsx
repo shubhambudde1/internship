@@ -25,23 +25,28 @@ const Login = () => {
 
   // Function to handle login with backend authentication
   const handleLogin = async () => {
-    if (!email || !password) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
       alert("Please enter email and password!");
       return;
     }
-
     try {
-      const response = await axios.post("http://localhost:5001/api/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:5001/api/users/login",
+        {
+          email: trimmedEmail,
+          password: trimmedPassword,
+        }
+      );
 // console.log(response);
       const { user } = response.data; // Extract user data
 
       // Store user info (excluding password) in localStorage
       localStorage.setItem("currentUser", JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role }));
       localStorage.setItem("isLoggedIn", "true");
-
+      console.log("User logged in:", user);
       setShowLoging(true);
 
       // Redirect based on role

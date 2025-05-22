@@ -4,6 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 
+
 const ManageUsers = () => {
   const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [newUser, setNewUser] = useState({
@@ -47,6 +48,7 @@ const ManageUsers = () => {
   const handleRoleChange = (event) => {
     const role = event.target.value;
     setSelectedRole(role);
+    
 
     if (role === "all") {
       setFilteredUsers(users); // Show all users
@@ -54,6 +56,8 @@ const ManageUsers = () => {
       setFilteredUsers(users.filter((user) => user.role === role)); // Filter users by role
     }
   };
+
+
 
   // Handle input changes for adding a new user
   const handleInputChange = (event) => {

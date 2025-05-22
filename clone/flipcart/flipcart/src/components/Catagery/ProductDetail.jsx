@@ -1,10 +1,13 @@
-import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Star } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import dummyProducts from './dummyProducts';
 import { CartContext } from './CartContext';
+import AskQuestion from '../QandA/AskQuestion'
+import { ToastContainer, toast } from 'react-toastify';
 
+import RecommendedProductsPurchased from '../RecommendedProductsPurchased';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -14,16 +17,39 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("M");
   const { dispatch } = useContext(CartContext);
   const [reviews, setReviews] = useState([]);
-  const [newReview, setNewReview] = useState({ rating: product.rating, comment: "" });
+  const [newReview, setNewReview] = useState({ rating: product?.rating || 0, comment: "" });
   const [customerName, setCustomerName] = useState('');
+    const [stockAvailable, setStockAvailable] = useState(false);
+  const [stockQuantity, setStockQuantity] = useState(0);
+
   
 
   useEffect(() => {
     if (product) {
       setReviews(product.reviews || []);
     }
+     fetchStock();
   }, [product]);
   
+   const fetchStock = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5001/api/inventry/${product.id}/stock`);
+        const { stockQuantity, stockStatus } = response.data;
+        const isAvailable = stockStatus === "In Stock";
+        setStockAvailable(isAvailable);
+        setStockQuantity(stockQuantity);
+
+        // if (!isAvailable) {
+        //   toast.error('This product is currently out of stock.');
+        // }
+      } catch (error) {
+        console.error("Failed to fetch stock information:", error);
+        setStockAvailable(false); // Default to unavailable if API call fails
+        setStockQuantity(0); // Reset quantity on error
+        toast.error(' The product may be out of stock.');
+      }
+    };
+
 
   const handleAddReview = async () => {
     const updatedReviews = [...reviews, newReview];
@@ -51,12 +77,20 @@ const ProductDetail = () => {
         localStorage.setItem('reviews', JSON.stringify(existingReviews));
         console.log('Reviews saved to localStorage:', existingReviews);
         try {
-          const response = await axios.post('http://localhost:5001/api/returnr', existingReviews);
+          const reviewData = {
+            order_id: '12345', // Replace with actual order ID
+            productID: product.id,
+            productName: product.name,
+            reason: 'Review', // Replace with actual reason
+            customer_name: customerName,
+            date: new Date().toISOString(),
+            reviews: [reviewWithCustomerName]
+          };
+          console.log('Review data to be sent:', reviewData);
+          const response = await axios.post('http://localhost:5001/api/returnr', reviewData);
           console.log('Reviews saved to database:', response.data);
-          
         } catch (error) {
           console.error('Failed to save reviews to database:', error);
-          
         }
 
 
@@ -71,13 +105,18 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
-    
+    if (!stockAvailable) {
+      toast.error('Product is out of stock and cannot be added to cart.');
+      return;
+    }
+
     dispatch({
       type: 'ADD_TO_CART',
       payload: { ...product, selectedColor, selectedSize }
     });
-    alert('Product added to cart');
-    navigate('/cart'); // Navigate to the cart page
+    toast.success('Product added to cart!');
+
+    navigate('/cart');
   };
 
   return (
@@ -85,6 +124,7 @@ const ProductDetail = () => {
         
     <div className="w-full h-full min-h-screen p-6 bg-gray-100 ">
       {/* Product Image and Details */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <div className="flex flex-col md:flex-row gap-6">
         {/* Image Section */}
         <div className="w-full md:w-1/2 p-7">
@@ -96,6 +136,7 @@ const ProductDetail = () => {
          
 
           <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{product.category}</h1>
 
           <div className="mt-4">
             <h2 className="text-lg font-semibold text-gray-700">Color</h2>
@@ -144,17 +185,30 @@ const ProductDetail = () => {
           </div>
 
           <div className="mt-6 flex gap-4">
-            <button
-              className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600"
-              onClick={handleAddToCart}
+            {/* Stock Status */}
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold text-gray-700">Stock Status</h2>
+              <p className={`mt-2 ${stockAvailable ? "text-green-500" : "text-red-500"}`}>
+                {stockAvailable ? `In Stock (${stockQuantity} available)` : "Out of Stock"}
+              </p>
+            </div>
+              <button
+                className={`px-6 py-3 rounded-md ${
+                  stockAvailable ? "bg-yellow-500 text-white hover:bg-yellow-600" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+                onClick={handleAddToCart}
+                disabled={!stockAvailable}
               >
-              ADD TO CART
-            </button>
-            <button className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600">
-            <a href="#" className="text-white">
-            BUY NOW
-          </a>
-            </button>
+                ADD TO CART
+              </button>
+              <button
+                className={`px-6 py-3 rounded-md ${
+                  stockAvailable ? "bg-orange-500 text-white hover:bg-orange-600" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+                disabled={!stockAvailable}
+              >
+                BUY NOW
+              </button>
           </div>
 
           <div className="mt-4 text-gray-600">
@@ -286,11 +340,14 @@ const ProductDetail = () => {
       <p className="text-gray-600">{review.comment}</p>
     </div>
   ))}
+
+      <AskQuestion userId={1} productId={1} onQuestionAdded={1} />
         </div>
         
         </div>
         
       </div>
+        <RecommendedProductsPurchased category={product.category} />
     </div>
    
               </>

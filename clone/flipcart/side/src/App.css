@@ -1,0 +1,120 @@
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafb);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.product-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  width: 200px;
+  text-align: center;
+}
+
+.compare-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 10px;
+  text-align: center;
+}
+
+.compare-page {
+  padding: 20px;
+}
+
+.compare-page table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.compare-page th,
+.compare-page td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.compare-page th {
+  background-color: #f0f0f0;
+}
+
+.create-poll {
+  padding: 20px;
+}
+
+.create-poll label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.create-poll input[type="text"] {
+  width: 300px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.create-poll button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.poll-list {
+  padding: 20px;
+}
+
+.poll-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.poll-list li {
+  margin-bottom: 10px;
+}
+
+.poll-list a {
+  color: #007bff;
+  text-decoration: none;
+}

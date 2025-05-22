@@ -40,3 +40,13 @@ p: Paste the copied text below the cursor.
 P: Paste the copied text above the cursor..
 <!-- generate jwt token -->
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'));"
+
+
+working  for returns table
+
+INSERT INTO returns (order_id, user_id, product_id, reason, status, requested_at, reviewed_at, refund_amount) 
+VALUES
+(4, 4, 4, 'Product damaged during shipping', 'Requested', '2025-04-20 10:30:00', NULL, 120.50)
+
+
+

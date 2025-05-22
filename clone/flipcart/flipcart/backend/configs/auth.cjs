@@ -26,24 +26,22 @@ router.post("/login", (req, res) => {
   }
 
   // Find user by email
-  db.query("SELECT * FROM admin_dashboard_user WHERE email = ? AND password = ?", [email, password], (err, results) => {
-    if (err) {
-      console.error("DB Error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-
+  db.query("SELECT * FROM admin_dashboard_user WHERE email = ? AND password = ?", [email, password])
+  .then(([results]) => {
     if (results.length === 0) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-
     const user = results[0];
-
     // Send response with role-based redirection
     res.json({
       success: true,
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
       redirectTo: user.role === "admin" ? "/admin" : "/",
     });
+  })
+  .catch(err => {
+    console.error("Login failed:", err);
+    return res.status(500).json({ message: "Login failed" });
   });
 });
 
