@@ -45,6 +45,13 @@ const Analysis = () => {
   const revenue = 120000; // Total Revenue
   const roiData = [2, 3, 5, 6, 8, 12]; // ROI Growth %
 
+  const topProducts = [
+    { name: "Laptop", sales: 15000 },
+    { name: "Smartphone", sales: 12000 },
+    { name: "Headphones", sales: 8000 },
+    { name: "Smartwatch", sales: 7000 },
+    { name: "Keyboard", sales: 6000 },
+  ];
   // 📊 Bar Chart (Sales vs Returns)
   const barChartData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -126,7 +133,7 @@ const Analysis = () => {
         </div>
       </div>
 
-      {/* 📊 Charts Section */}
+      {/* 📊 Charts and Tables Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-gray-700 mb-2">📈 Sales vs Returns</h2>
@@ -151,6 +158,29 @@ const Analysis = () => {
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-gray-700 mb-2">📦 Orders Per Month</h2>
           <PolarArea data={ordersChartData} />
+        </div>
+
+        {/* 📋 Top Selling Products Table */}
+        <div className="bg-white p-4 rounded-lg shadow-md lg:col-span-3">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">🏆 Top 5 Selling Products</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales (₹)</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {topProducts.map((product, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{product.sales.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

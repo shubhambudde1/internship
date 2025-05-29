@@ -49,6 +49,31 @@ const ProductDetail = () => {
         toast.error(' The product may be out of stock.');
       }
     };
+  const handleBuyNow = async () => {
+    console.log('Buy Now clicked');
+  if (!stockAvailable) {
+    toast.error('Product is out of stock and cannot be purchased.');
+    return;
+  }
+
+  try {
+    // Reduce stock by 1
+   await axios.put(`http://localhost:5001/api/inventry/${product.id}/stock`, {
+  stock_quantity: stockQuantity - 1
+  });
+  dispatch({
+    type: 'ADD_TO_CART',
+    payload: { ...product, selectedColor, selectedSize }
+  });
+  toast.success('Product added to cart!');
+
+    navigate('/cart');
+   
+  } catch (error) {
+    toast.error('Error updating stock. Please try again.');
+    console.error(error);
+  }
+  }
 
 
   const handleAddReview = async () => {
@@ -61,6 +86,7 @@ const ProductDetail = () => {
     dummyProducts.splice(productIndex, 1, updatedProduct);
     localStorage.setItem('products', JSON.stringify(dummyProducts));
     
+ toast.success('Review added successfully!');
       try {
         const reviewWithCustomerName = { ...newReview, customerName: customerName };
         setCustomerName('');
@@ -206,6 +232,7 @@ const ProductDetail = () => {
                   stockAvailable ? "bg-orange-500 text-white hover:bg-orange-600" : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!stockAvailable}
+                onClick= {handleBuyNow}
               >
                 BUY NOW
               </button>

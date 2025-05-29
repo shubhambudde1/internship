@@ -20,6 +20,7 @@ import AdminDashboard from './components/AdminDashboard'; // Import AdminDashboa
 import ManageUsers from './components/admin/ManageUsers.jsx'; // Import ManageUsers component
 import Appp from './poll/Appp.jsx'; // Import Appp component
 import Userdashbord from './components/userdashbord.jsx'; // Import Dashboardu component
+import Chatbot from './components/Chatbot.jsx'; // Import Chatbot component
 
 // // poll page
 // import ProductCard from './poll/ProductCard';
@@ -57,7 +58,7 @@ const App = () => {
           <Route path="/DProfile" element={<DProfil />} /> 
           <Route path="/admin" element={<AdminDashboard />} /> 
           
-          <Route path="/userDashbord" element={<Userdashbord />} /> 
+          <Route path="/userDashbord" element={<Userdashbord  />} /> 
           
           {/* <Route path="/admin" element={currentUser?.role === "admin" ? <ManageUsers currentUser={currentUser} /> : <Navigate to="/dashboard" />} />  */}
           
@@ -65,6 +66,7 @@ const App = () => {
         
 
         </Routes>
+         <Chatbot />
         <Footer />
       </Router>
     </CartProvider>

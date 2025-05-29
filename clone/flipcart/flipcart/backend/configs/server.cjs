@@ -20,7 +20,7 @@ const routeQASection = require("./QuestionAndAnswer.cjs")
 const routerecommendPurchased = require("./RecommendBasedPurchased.cjs") // Ensure this file exists and exports a router
 const routerewardLoyelty = require("./rewardLoyelty.cjs") // Ensure this file exists and exports a router
 const routeordeReturn = require("./order_return.cjs") // Ensure this file exists and exports a router
-
+const routecart = require("./cart.cjs") // Ensure this file exists and exports a router
 
 const app = express();
 app.use(cors());
@@ -73,7 +73,7 @@ app.use("/api/rewardLoyelty", routerewardLoyelty);
 
 app.use("/api/ordeReturn", routeordeReturn); // Ensure this file exists and exports a router
 
-
+app.use("/api/cart", routecart); // Ensure this file exists and exports a router
 // Root route for testing
 app.get("/", (req, res) => {
     res.send("Server is running...");

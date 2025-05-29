@@ -5,7 +5,7 @@ const db = require("./udb.cjs").promise(); // Use the promise wrapper
 
 // Get all products with specific seller details
 router.get('/', async (req, res) => { // Added async
-    console.log("Fetching all products with seller details...");
+    // console.log("Fetching all products with seller details...");
     try {
         // Updated SQL query to select specific fields from both tables
         const sql = `
@@ -32,7 +32,7 @@ router.get('/', async (req, res) => { // Added async
         `;
         const [productsWithSellers] = await db.query(sql); // Use promise-based query
         res.json(productsWithSellers);
-        console.log("Products with seller details fetched successfully:", productsWithSellers.length, "items found.");
+        // console.log("Products with seller details fetched successfully:", productsWithSellers.length, "items found.");
 
     } catch (error) {
         console.error("Error fetching products with seller details:", error);
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => { // Added async
 router.get('/:id/stock', async (req, res) => {
     const productId = req.params.id;
 
-    console.log(`Checking stock for product ID ${productId}...`);
+    // console.log(`Checking stock for product ID ${productId}...`);
     try {
         const [result] = await db.query(
             'SELECT stock_quantity FROM product_manage WHERE id = ?',
@@ -61,7 +61,7 @@ router.get('/:id/stock', async (req, res) => {
         const stockStatus = stockQuantity > 0 ? 'In Stock' : 'Out of Stock';
 
         res.json({ productId, stockQuantity, stockStatus });
-        console.log(`Stock for product ID ${productId}: ${stockQuantity} (${stockStatus})`);
+        // console.log(`Stock for product ID ${productId}: ${stockQuantity} (${stockStatus})`);
 
     } catch (error) {
         console.error(`Error checking stock for product ID ${productId}:`, error);
@@ -73,6 +73,7 @@ router.get('/:id/stock', async (req, res) => {
 router.put('/:id/stock', async (req, res) => {
     const { stock_quantity } = req.body;
     const productId = req.params.id;
+    console.log(`Received request to update stock for product ID ${productId} with stock_quantity: ${stock_quantity}`);
 
     // Basic validation
     if (stock_quantity === undefined || isNaN(parseInt(stock_quantity))) {

@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
 
 
 
-  
+
   // ✅ SIGNUP API
   router.post('/signup', (req, res) => {
     const { name, email, password, role } = req.body;
